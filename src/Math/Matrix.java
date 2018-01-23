@@ -32,6 +32,11 @@ public class Matrix {
      */
     protected int height;
 
+    private Double doubleXYtoIndex(int x, int y) {
+        int position = x * width + y;
+        return values.get(position);
+    }
+
     /**
      * Matrix arraylist constructor. This constructor takes in an {@code ArrayList<Double>} as its input.
      * @param w {@code int} the width of the matrix
