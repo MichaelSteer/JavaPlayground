@@ -1,6 +1,7 @@
 package Math;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 
 /**
  * By Michael Steer
@@ -11,36 +12,52 @@ import java.util.ArrayList;
 // TODO: Fill out all Documentation
 public class Matrix {
 
+    public static final boolean CHECK_ERRORS = false;
+
     /**
      * The array of values that are stored within the matrix
      * @see ArrayList
      */
-    ArrayList<Double> values;
+    private ArrayList<Double> values;
 
     /**
      * The width of the matrix. This value must be non-negative
      * @see Integer
      */
-    int width;
+    protected int width;
 
     /**
      * The height of the matrix. This value must be non-negative
      * @see Integer
      */
-    int height;
+    protected int height;
 
     /**
-     * Matrix arraylist constructor. This constructor takes in
-     * an {@code ArrayList<Double>} as its input.
+     * Matrix arraylist constructor. This constructor takes in an {@code ArrayList<Double>} as its input.
      * @param w {@code int} the width of the matrix
      * @param h {@code int} the height of the matrix
      * @param values {@code ArrayList<Double>} the matrix values
-     * @throws invalidArrayListSizeException {@code ArrayList<Double>} is thrown if the Arraylist
-     * does not match the size of the spcified values w*h
+     * @throws invalidArrayListSizeException is thrown if the {@code Arraylist} does not match the size of the spcified values {@code w*h}
      */
-    public Matrix(int w, int h, ArrayList<Double> values) {
-        // TODO: Add Matrix List Constructor
-        // TODO: Throw an InvalidArrayListSize exception
+    public Matrix(int w, int h, ArrayList<Double> values) throws invalidArrayListSizeException {
+        if (w <= 0) {
+            throw new invalidArrayListSizeException("Matrix width too small");
+        }
+        else if (h <= 0) {
+            throw new invalidArrayListSizeException("Matrix height too small");
+        }
+        else if (w*h != values.size()) {
+            int expected = w*h;
+            int actual = values.size();
+            String outstring = "Expected: " + expected + " Actual: " + actual;
+            throw new invalidArrayListSizeException(outstring);
+        }
+        else {
+            this.width  = w;
+            this.height = h;
+            this.values = values;
+            System.out.println("Created Matrix succesfully");
+        }
     }
 
     /**
@@ -53,8 +70,25 @@ public class Matrix {
      * @throws invalidArrayListSizeException {@code ArrayList<Double>} is thrown if the Arraylist
      * does not match the size of the spcified values w*h
      */
-    public Matrix(int w, int h, Double... values) {
-        // TODO: Add Matrix Value List constructor
+    public Matrix(int w, int h, Double... values) throws invalidArrayListSizeException {
+        if (w <= 0) {
+            throw new invalidArrayListSizeException("Matrix width too small");
+        }
+        else if (h <= 0) {
+            throw new invalidArrayListSizeException("Matrix height too small");
+        }
+        else if (w*h != values.length) {
+            int expected = w*h;
+            int actual = values.length;
+            String outstring = "Expected: " + expected + " Actual: " + actual;
+            throw new invalidArrayListSizeException(outstring);
+        }
+        else {
+            this.width  = w;
+            this.height = h;
+            this.values = new ArrayList<Double>(Arrays.asList(values));
+            System.out.println("Created Matrix succesfully");
+        }
     }
 
     /**
@@ -417,6 +451,17 @@ public class Matrix {
         // TODO: Implement cross product implementation
         // TODO: Implement invalidCrossProductDimensions exception
         // TODO: Implement matrixSizeMismatch exception
+    }
+
+    /**
+     * Convert from a 2D coordanate space to a single Dimensional space
+     * @param x {@code int} the X parameter of the conversion
+     * @param y {@code int} the Y parameter of the conversion
+     * @return {@code int} the outcome of the conversion
+     * @throws invalidArrayListSizeException the matrix size does not make sense
+     */
+    private int XYtoIndex(int x, int y) {
+        return x*width+height;
     }
 
 
