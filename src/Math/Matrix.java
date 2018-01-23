@@ -104,9 +104,14 @@ public class Matrix {
      * @see Double
      * @throws InvalidArrayBoundsException if x or y are outside of the matrix size bounds
      */
-    public double getValue(int x, int y) {
+    public double getValue(int x, int y) throws invalidArrayBoundsException {
         // TODO: Implement getValue function
         // TODO: Implement invald bounds exception for getValue
+        try {
+            return XYtoIndex(x, y);
+        } catch (invalidArrayListSizeException e) {
+            e.printStackTrace();
+        }
     }
 
     /**
@@ -186,6 +191,18 @@ public class Matrix {
     }
 
     /**
+     * get a given row of the matrix from a specified row
+     * @param y {@code int} the requested row
+     * @param l {@code int} the length of the requested row
+     * @return {@code Matrix} the returned row
+     * @throws invalidRowException if y is outside of the matrix size bounds
+     */
+    public Matrix getRow(int y, int l) {
+        // TODO: Implement getRow function
+        // TODO: Implement invalidRow exception
+    }
+
+    /**
      * Get a given column of the matrix from a specified column
      * @param x {@code int} the requested column
      * @return {@code Matrix} the returned column
@@ -195,6 +212,19 @@ public class Matrix {
         // TODO: Implement getColumn Function
         // TODO: Implement invalidColumn Exception
     }
+
+    /**
+     * Get a given column of the matrix from a specified column
+     * @param x {@code int} the requested column
+     * @param w {@code int} the width of the requested column
+     * @return {@code Matrix} the returned column
+     * @throws invalidColumnException if x is outside of the matrix size bounds
+     */
+    public Matrix getColumn(int x, int w) {
+        // TODO: Implement getColumn Function
+        // TODO: Implement invalidColumn Exception
+    }
+
 
     /**
      * Set a given row of the matrix to a specified row
@@ -465,7 +495,7 @@ public class Matrix {
      * @return {@code int} the outcome of the conversion
      * @throws invalidArrayListSizeException the matrix size does not make sense
      */
-    private int XYtoIndex(int x, int y) {
+    private int XYtoIndex(int x, int y) throws invalidArrayListSizeException {
         return x*width+height;
     }
 
