@@ -9,20 +9,26 @@
  *
  * @author Michael Steer
  * @version 1.0
+ * @since 2018-01-22
  */
 package Math;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-
+import java.util.Objects;
 
 
 // TODO: Fill out all Documentation
+// TODO: Generate documentation for the exceptions
 
 /**
- *
+ * Matrix class
  */
 public class Matrix {
+
+    /******************************************************************************************************************
+     * Variables
+     */
 
     public static final boolean CHECK_ERRORS = false;
 
@@ -44,10 +50,22 @@ public class Matrix {
      */
     protected int height;
 
-    private Double doubleXYtoIndex(int x, int y) {
-        int position = x * width + y;
-        return values.get(position);
-    }
+    /**
+     * The rank of the matrix
+     * @see Integer
+     */
+    protected int rank;
+
+    /**
+     * the current matrix status
+     * @see Integer
+     */
+    protected boolean changed;
+
+
+    /******************************************************************************************************************
+     * CONSTRUCTORS
+     */
 
     /**
      * Matrix arraylist constructor. This constructor takes in an {@code ArrayList<Double>} as its input.
@@ -88,25 +106,12 @@ public class Matrix {
      * does not match the size of the spcified values w*h
      */
     public Matrix(int w, int h, Double... values) throws invalidArrayListSizeException {
-        if (w <= 0) {
-            throw new invalidArrayListSizeException("Matrix width too small");
-        }
-        else if (h <= 0) {
-            throw new invalidArrayListSizeException("Matrix height too small");
-        }
-        else if (w*h != values.length) {
-            int expected = w*h;
-            int actual = values.length;
-            String outstring = "Expected: " + expected + " Actual: " + actual;
-            throw new invalidArrayListSizeException(outstring);
-        }
-        else {
-            this.width  = w;
-            this.height = h;
-            this.values = new ArrayList<Double>(Arrays.asList(values));
-            System.out.println("Created Matrix succesfully");
-        }
+        this(w, h, new ArrayList<Double>(Arrays.asList(values)));
     }
+
+    /******************************************************************************************************************
+     * Individual values
+     */
 
     /**
      * Return a given value for a specified set of coordinate
@@ -114,28 +119,70 @@ public class Matrix {
      * @param y {@code int} the y coordinate of the value within the matrix
      * @return {@code double} the value stored at the specified coordinates
      * @see Double
-     * @throws invalidArrayBoundsException if x or y are outside of the matrix size bounds
+     * @throws invalidArrayListSizeException
      */
-    public double getValue(int x, int y) throws invalidArrayBoundsException {
-        // TODO: Implement getValue function
-        // TODO: Implement invald bounds exception for getValue
-        try {
-            return XYtoIndex(x, y);
-        } catch (invalidArrayListSizeException e) {
-            e.printStackTrace();
-        }
+    public double getValue(int x, int y) throws InvalidArrayBoundsException, invalidArrayListSizeException {
+        if(this.checkXYBounds(x, y)) throw new InvalidArrayBoundsException("Invalid matrix getValue parameters");
+        return doubleXYtoIndex(x, y);
     }
 
     /**
      * Set a given value for a specified set of coordinate
      * @param x {@code int} the x coordinate of the value within the matrix
      * @param y {@code int} the y coordinate of the value within the matrix
+     * @double value {@code double} tje value to be set at the specified coordanates
      * @throws invalidArrayBoundsException if x or y are outside of the matrix size bounds
+     * @throws invalidArrayListSizeException the specified list size does not match what is on record
      * @see Double
      */
-    public double setValue(int x, int y) throws invalidArrayBoundsException {
-        // TODO: Implement setValue function
-        // TODO: Implement invalid bounds exception for setValue
+    public double setValue(int x, int y, double value) throws invalidArrayBoundsException, invalidArrayListSizeException {
+        if (this.checkXYBounds(x, y)) throw new InvalidArrayBoundsException("Invalid matrix setValue parameters");
+        int index = this.XYtoIndex(x, y);
+        values.set(index, value);
+    }
+
+    /**
+     * Get the width of the matrix
+     * @return {@code int} the width of the matrix
+     */
+    public int getWidth() {
+        return this.width;
+    }
+
+    /**
+     * Get the height of the matrix
+     * @return {@code int} the height of the matrix
+     */
+    public int getHeight() {
+        return this.height;
+    }
+
+
+    /******************************************************************************************************************
+     * SUB MATRICES
+     */
+
+    /**
+     * Return a double array representing a given specified window from x, y, w, h
+     * @param x {@code int} the bottom-left X dimension corner of the window
+     * @param y {@code int} the bottom-left Y dimension corner of the window
+     * @param w {@code int} the width of the window
+     * @param h {@code int} the height of the window
+     * @return {@code double[]} the Matrix representing the window specified
+     * @throws invalidWindowBoundsException invalid window bounds
+     */
+    public Double[] getWindowArray(int x, int y, int w, int h) throws invalidWindowBoundsException, invalidArrayListSizeException {
+        // TODO: Implement getWindow Matrix function
+        // TODO: Implement invalid window exception for getWindow
+        if(this.checkXYBounds(x, y)) throw invalidWindowBoundsException;
+        int nValues = x*y;
+        ArrayList<Double> values = new ArrayList<Double>();
+        for(int i = x; i < x + w; i++) {
+            for (int j = y; j < y + h; j++) {
+                values.add(doubleXYtoIndex(i, j));
+            }
+        }
+        return values.toArray(new Double[values.size()]);
     }
 
     /**
@@ -148,23 +195,12 @@ public class Matrix {
      * @throws invalidWindowBoundsException invalid window bounds
      * @see Matrix
      */
-    public Matrix getWindow(int x, int y, int w, int h) throws invalidWindowBoundsException{
-        // TODO: Implement getWindow Matrix function
-        // TODO: Implement invalid window exception for getWindow
-    }
-
-    /**
-     * Return a double array representing a given specified window from x, y, w, h
-     * @param x {@code int} the bottom-left X dimension corner of the window
-     * @param y {@code int} the bottom-left Y dimension corner of the window
-     * @param w {@code int} the width of the window
-     * @param h {@code int} the height of the window
-     * @return {@code double[]} the Matrix representing the window specified
-     * @throws invalidWindowBoundsException invalid window bounds
-     */
-    public double[] getWindow(int x, int y, int w, int h) throws invalidWindowBoundsException {
+    public Matrix getWindowMatrix(int x, int y, int w, int h) throws invalidWindowBoundsException,
+            invalidArrayListSizeException {
         // TODO: Implement getWindow double[] function
         // TODO: Implement invalid window exception for getWindow
+        return new Matrix(w, h, this.getWindowArray(x, y, w, h));
+
     }
 
     /**
@@ -174,9 +210,12 @@ public class Matrix {
      * @param m {@code Matrix} the substituting matrix
      * @throws invalidWindowBoundsException invalid window bounds
      */
-    public void setWindow(int x, int y, Matrix m) throws invalidWindowBoundsException {
-        // TODO: Implement setWindow Matrix function
-        // TODO: Implement matrix bounds checking for window
+    public void setWindow(int x, int y, Matrix m) throws invalidWindowBoundsException, InvalidArrayBoundsException, invalidArrayListSizeException {
+        for (int i = x; i <= x+getWidth(); i++) {
+            for (int j = y; j <= y+getHeight(); j++) {
+                setValue(i, j, m.getValue(m.getWidth()-i, m.getHeight()-y));
+            }
+        }
     }
 
     /**
@@ -188,9 +227,8 @@ public class Matrix {
      * @throws invalidWindowBoundsException invalid window bounds
      * @throws InvalidArrayBoundsException if x or y are outside of the matrix size bounds
      */
-    public void setWindow(int x, int y, int w, int h, double... data) throws invalidWindowBoundsException, invalidArrayBoundsException {
-        // TODO: Implement setWindow double[] function
-        // TODO: Implement matrix bounds checking function
+    public void setWindow(int x, int y, int w, int h, Double... data) throws invalidWindowBoundsException, InvalidArrayBoundsException, invalidArrayListSizeException {
+        this.setWindow(x, y, new Matrix(w, h, data));
     }
 
     /**
@@ -273,6 +311,10 @@ public class Matrix {
         // TODO: Implement matrixSizeMismatch exception
 
     }
+
+    /******************************************************************************************************************
+     * Arithemetic
+     */
 
     /**
      * Add a constant to all values of the current matrix
@@ -461,6 +503,10 @@ public class Matrix {
         // TODO: Implement matrixDivisionByZero exception
     }
 
+    /******************************************************************************************************************
+     * MATRIX OPERATIONS
+     */
+
     /**
      * Calculate the inverse of the input matrix
      * @return {@code Matrix} The matrix inverse
@@ -596,6 +642,8 @@ public class Matrix {
         // TODO: Implement nonDeterminable exception
     }
 
+
+
     /**
      * Returns the cross product of the matrix if the cross product can be computed
      * @param other {@code Matrix} the other matrix
@@ -609,6 +657,11 @@ public class Matrix {
         // TODO: Implement matrixSizeMismatch exception
     }
 
+    /******************************************************************************************************************
+     * Additional functions
+     */
+
+
     /**
      * Convert from a 2D coordanate space to a single Dimensional space
      * @param x {@code int} the X parameter of the conversion
@@ -618,6 +671,27 @@ public class Matrix {
      */
     private int XYtoIndex(int x, int y) throws invalidArrayListSizeException {
         return x*width+height;
+    }
+
+    /**
+     * Convert from a 2D coordanite space to a double value within the matrix
+     * @param x {@code int} the X parameter of the conversion
+     * @param y {@code int} the Y parameter of the conversion
+     * @return {@code int} the outcome of the conversion
+     * @throws invalidArrayListSizeException coordanate is out of bounds
+     */
+    private Double doubleXYtoIndex(int x, int y) throws invalidArrayListSizeException {
+        return values.get(this.XYtoIndex(x, y));
+    }
+
+    /**
+     * Returns true when X and Y are within bounds
+     * @param x {@code int} the X coordanate
+     * @param y {@code int} the Y coordanate
+     * @return {@code boolean} the bounds condition status
+     */
+    private boolean checkXYBounds(int x, int y) {
+        return !(x < 0 || x >= this.width || y < 0 || y >= this.height);
     }
 
     /**
