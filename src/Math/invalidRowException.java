@@ -6,4 +6,8 @@ public class invalidRowException extends Exception {
         super(message);
         // Exception goes here
     }
+
+    public invalidRowException() {
+
+    }
 }

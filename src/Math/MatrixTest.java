@@ -4,6 +4,11 @@ import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+
+// TODO: Document test
+// TODO: Implement tests
+// TODO: Get tests working
+
 class MatrixjUnitTest {
 
     @org.junit.jupiter.api.BeforeEach

@@ -13,18 +13,19 @@
  */
 package Math;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Objects;
+import java.io.Serializable;
+import java.lang.reflect.Array;
+import java.util.*;
 
 
 // TODO: Fill out all Documentation
 // TODO: Generate documentation for the exceptions
-
+// TODO: Actually fill out method functionality
+// TODO: Change variable type from Double to generic
 /**
  * Matrix class
  */
-public class Matrix {
+public class Matrix implements Serializable {
 
     /******************************************************************************************************************
      * Variables
@@ -127,6 +128,20 @@ public class Matrix {
     }
 
     /**
+     * Return a given value for a specified index
+     * @param index {@code int} the position of the value within the matrix
+     * @return {@code double} the value stored at the specified coordinates
+     * @see Double
+     * @throws invalidArrayListSizeException
+     */
+    public double getValue(int index) throws InvalidArrayBoundsException {
+        if (index < 0 || index >= values.size()) {
+            throw new InvalidArrayBoundsException("Invalid matrix getValue Parameters");
+        }
+        return values.get(index);
+    }
+
+    /**
      * Set a given value for a specified set of coordinate
      * @param x {@code int} the x coordinate of the value within the matrix
      * @param y {@code int} the y coordinate of the value within the matrix
@@ -135,7 +150,7 @@ public class Matrix {
      * @throws invalidArrayListSizeException the specified list size does not match what is on record
      * @see Double
      */
-    public double setValue(int x, int y, double value) throws invalidArrayBoundsException, invalidArrayListSizeException {
+    public double setValue(int x, int y, double value) throws invalidArrayBoundsException, invalidArrayListSizeException, InvalidArrayBoundsException {
         if (this.checkXYBounds(x, y)) throw new InvalidArrayBoundsException("Invalid matrix setValue parameters");
         int index = this.XYtoIndex(x, y);
         values.set(index, value);
@@ -172,8 +187,6 @@ public class Matrix {
      * @throws invalidWindowBoundsException invalid window bounds
      */
     public Double[] getWindowArray(int x, int y, int w, int h) throws invalidWindowBoundsException, invalidArrayListSizeException {
-        // TODO: Implement getWindow Matrix function
-        // TODO: Implement invalid window exception for getWindow
         if(this.checkXYBounds(x, y)) throw invalidWindowBoundsException;
         int nValues = x*y;
         ArrayList<Double> values = new ArrayList<Double>();
@@ -197,10 +210,7 @@ public class Matrix {
      */
     public Matrix getWindowMatrix(int x, int y, int w, int h) throws invalidWindowBoundsException,
             invalidArrayListSizeException {
-        // TODO: Implement getWindow double[] function
-        // TODO: Implement invalid window exception for getWindow
         return new Matrix(w, h, this.getWindowArray(x, y, w, h));
-
     }
 
     /**
@@ -237,21 +247,13 @@ public class Matrix {
      * @return {@code Matrix} the returned row
      * @throws invalidRowException if y is outside of the matrix size bounds
      */
-    public Matrix getRow(int y) throws invalidRowException{
-        // TODO: Implement getRow function
-        // TODO: Implement invalidRow exception
-    }
-
-    /**
-     * get a given row of the matrix from a specified row
-     * @param y {@code int} the requested row
-     * @param l {@code int} the length of the requested row
-     * @return {@code Matrix} the returned row
-     * @throws invalidRowException if y is outside of the matrix size bounds
-     */
-    public Matrix getRow(int y, int l) throws invalidRowException {
-        // TODO: Implement getRow function
-        // TODO: Implement invalidRow exception
+    public Matrix getRow(int y) throws invalidRowException, invalidArrayListSizeException {
+        if (checkXYBounds(0, y)) throw new invalidRowException("Invalid Row: " + y);
+        ArrayList<Double> row = new ArrayList<Double>();
+        for(int i = 0; i < values.size(); i += getHeight()) {
+            row.add(values.get(i));
+        }
+        return new Matrix(getWidth(), 1, row);
     }
 
     /**
@@ -261,31 +263,17 @@ public class Matrix {
      * @throws invalidColumnException if x is outside of the matrix size bounds
      */
     public Matrix getColumn(int x) throws invalidColumnException {
-        // TODO: Implement getColumn Function
-        // TODO: Implement invalidColumn Exception
+        if (checkXYBounds(x, 0)) throw new invalidColumnException("Invalid Column: " + x);
+        return new Matrix(1, getHeight(), values.subList(XYtoIndex(x, 0)), XYtoIndex(x+1, 0)-1);
     }
-
-    /**
-     * Get a given column of the matrix from a specified column
-     * @param x {@code int} the requested column
-     * @param w {@code int} the width of the requested column
-     * @return {@code Matrix} the returned column
-     * @throws invalidColumnException if x is outside of the matrix size bounds
-     */
-    public Matrix getColumn(int x, int w) throws invalidColumnException {
-        // TODO: Implement getColumn Function
-        // TODO: Implement invalidColumn Exception
-    }
-
 
     /**
      * Set a given row of the matrix to a specified row
      * @param y {@code int} the requested column
      * @throws invalidRowException if y is outside of the matrix size bounds
      */
-    public void setRow(int y, Matrix row) throws invalidRowException {
-        // TODO: Implement setRow function
-        // TODO: Implement invalidRow exception
+    public void setRow(int y, Matrix row) throws invalidRowException, InvalidArrayBoundsException, invalidArrayListSizeException {
+        setRow(y, row.data());
     }
 
     /**
@@ -293,9 +281,36 @@ public class Matrix {
      * @param x {@code int} the requested column
      * @throws invalidColumnException if x is outside of the matrix size bounds
      */
-    public void setColumn(int x, Matrix column) throws invalidColumnException {
-        // TODO: Implement setColumn Function
-        // TODO: Implement invalidColumn Exceptiom
+    public void setColumn(int x, Matrix column) throws invalidColumnException, InvalidArrayBoundsException, invalidArrayListSizeException {
+        setColumn(x, column.data());
+    }
+
+    /**
+     * Set a given row of the matrix to a specified row
+     * @param y {@code int} the requested column
+     * @throws invalidRowException if y is outside of the matrix size bounds
+     */
+    public void setRow(int y, ArrayList<Double> row) throws invalidRowException, InvalidArrayBoundsException, invalidArrayListSizeException {
+        if (checkXYBounds(0, y)) throw new invalidRowException("Invalid Row: " + y);
+        int element = 0;
+        for(int i = 0; i < values.size(); i += getHeight()) {
+            values.set(i, row.get(XYtoIndex(0, element)));
+            element++;
+        }
+    }
+
+    /**
+     * Set a given column of the matrix to a specified column
+     * @param x {@code int} the requested column
+     * @throws invalidColumnException if x is outside of the matrix size bounds
+     */
+    public void setColumn(int x, ArrayList<Double> column) throws invalidColumnException, InvalidArrayBoundsException, invalidArrayListSizeException {
+        if (checkXYBounds(x, 0)) throw new invalidColumnException("Invalid Column: " + x);
+        int element = 0;
+        for (int i = 0; i < column.size(); i++) {
+            values.set(i, column.getValue(XYtoIndex(element, 0)));
+            element++;
+        }
     }
 
     /**
@@ -305,11 +320,13 @@ public class Matrix {
      * @throws invalidAdditionException the addition could not be completed
      * @throws matrixSizeMismatchException the matrices that were compared were not of compatible sizes
      */
-    public Matrix add(Matrix other) throws invalidAdditionException, matrixSizeMismatchException {
-        // TODO: Implement matrix addition function
-        // TODO: Implement invalidAddition exception
-        // TODO: Implement matrixSizeMismatch exception
-
+    public Matrix add(Matrix other) throws invalidAdditionException, matrixSizeMismatchException, invalidArrayListSizeException, InvalidArrayBoundsException {
+        if (compareSizes(this, other)) throw new matrixSizeMismatchException("Matrices were not the same size");
+        ArrayList<Double> output = new ArrayList<Double>();
+        for (int i = 0 ; i < values.size(); i++) {
+            output.add(values.get(i)+other.getValue(i));
+        }
+        return new Matrix(width, height, output);
     }
 
     /******************************************************************************************************************
@@ -323,11 +340,12 @@ public class Matrix {
      * @throws invalidAdditionException the addition could not be completed
      * @throws matrixSizeMismatchException the matrices that were compared were not of compatible sizes
      */
-    public Matrix add(double constant) throws invalidAdditionException {
-        // TODO: Implement matrix addition function
-        // TODO: Implement invalidAddition exception
-        // TODO: Implement matrixSizeMismatch exception
-
+    public Matrix add(double constant) throws invalidArrayListSizeException {
+        ArrayList<Double> output = new ArrayList<Double>();
+        for (double value: values) {
+            output.add(value+constant);
+        }
+        return new Matrix(width, height, output);
     }
 
     /**
@@ -337,10 +355,13 @@ public class Matrix {
      * @throws invalidSubtractionException the subtraction could not be completed
      * @throws matrixSizeMismatchException the matrices that were compared were not of compatible sizes
      */
-    public Matrix sub(Matrix other) throws invalidSubtractionException, matrixSizeMismatchException {
-        // TODO: Implement matrix subtraction function
-        // TODO: Implement invalidSubtraction exception
-        // TODO: Implement matrixSizeMismatch exception
+    public Matrix sub(Matrix other) throws invalidSubtractionException, matrixSizeMismatchException, InvalidArrayBoundsException, invalidArrayListSizeException {
+        if (compareSizes(this, other)) throw new matrixSizeMismatchException("Matrices were not the same size");
+        ArrayList<Double> output = new ArrayList<Double>();
+        for (int i = 0 ; i < values.size(); i++) {
+            output.add(values.get(i)-other.getValue(i));
+        }
+        return new Matrix(width, height, output);
     }
 
     /**
@@ -349,10 +370,12 @@ public class Matrix {
      * @return {@code Matrix} the output of the subtraction
      * @throws invalidSubtractionException the subtraction could not be completed
      */
-    public Matrix sub(double constant) throws invalidSubtractionException {
-        // TODO: Implement matrix subtraction function
-        // TODO: Implement invalidSubtraction exception
-        // TODO: Implement matrixSizeMismatch exception
+    public Matrix sub(double constant) throws invalidSubtractionException, invalidArrayListSizeException {
+        ArrayList<Double> output = new ArrayList<Double>();
+        for (double value: values) {
+            output.add(value-constant);
+        }
+        return new Matrix(width, height, output);
     }
 
     /**
@@ -362,10 +385,18 @@ public class Matrix {
      * @throws invalidMultiplicationException the multiplication could not be completed
      * @throws matrixSizeMismatchException the matrices that were compared were not of compatible sizes
      */
-    public Matrix multiply(Matrix other) throws invalidMultiplicationException, matrixSizeMismatchException {
+    public Matrix multiply(Matrix other) throws invalidMultiplicationException, matrixSizeMismatchException, InvalidArrayBoundsException, invalidArrayListSizeException {
         // TODO: Implement matrix multiplication function
         // TODO: Implement invalidMultiplication exception
         // TODO: Implement matrixMultiplicationSizeMismatch exception
+        ArrayList<Double> output = new ArrayList<Double>();
+        if (getWidth() != other.getHeight()) throw new matrixSizeMismatchException("Matrices are the wrong size to multiply");
+        for (int i = 0; i < width; i++) {
+            for (int j = 0; j < other.getHeight(); j++) {
+                output.add(rowColumnDotProduct(i, j, other));
+            }
+        }
+        return new Matrix(width, other.getHeight())
     }
 
     /**
@@ -375,9 +406,11 @@ public class Matrix {
      * @throws invalidMultiplicationException the addition could not be completed
      */
     public Matrix multiply(double constant) throws invalidMultiplicationException, matrixSizeMismatchException {
-        // TODO: Implement matrix multiplication function
-        // TODO: Implement invalidMultiplication exception
-        // TODO: Implement matrixMultiplicationSizeMismatch exception
+        ArrayList<Double> output = new ArrayList<Double>();
+        for (double value: values) {
+            output.add(value*constant);
+        }
+        return new Matrix(width, height, output);
     }
 
     /**
@@ -387,120 +420,13 @@ public class Matrix {
      * @throws invalidScalarMultiplicationException the addition could not be completed
      * @throws matrixSizeMismatchException the matrices that were compared were not of compatible sizes
      */
-    public Matrix scalarMultiply(Matrix other) throws invalidScalarMultiplicationException, matrixSizeMismatchException {
-        // TODO: Implement scalar multiplication function
-        // TODO: Implement invalidScalarMultiplication exception
-    }
-
-    /**
-     * divide an additional matrix by the current matrix in a scalar fashion
-     * @param other {@code Matrix}
-     * @return {@code Matrix} the output of the addition
-     * @throws invalidDivisionException the addition could not be completed
-     * @throws matrixSizeMismatchException the matrices that were compared were not of compatible sizes
-     */
-    public Matrix divide(Matrix other) throws invalidDivisionException, matrixSizeMismatchException {
-        // TODO: Implement scalar multiplication function
-        // TODO: Implement invalidScalarMultiplication exception
-        // TODO: Implement matrixSizeMismatch exception
-        // TODO: Implement matrixDivisionByZero exception
-    }
-
-    /**
-     * divide an additional matrix by a constant
-     * @param constant {@code double}
-     * @return {@code Matrix} the output of the addition
-     * @throws invalidDivisionException the addition could not be completed
-     * @throws matrixSizeMismatchException the matrices that were compared were not of compatible sizes
-     */
-    public Matrix divide(double constant) throws invalidDivisionException {
-        // TODO: Implement scalar multiplication function
-        // TODO: Implement invalidScalarMultiplication exception
-        // TODO: Implement matrixSizeMismatch exception
-        // TODO: Implement matrixDivisionByZero exception
-    }
-
-    /**
-     * Add an additional matrix to the current matrix in a scalar fashion
-     * @param other {@code Matrix}
-     * @return {@code Matrix} the output of the addition
-     * @throws invalidPowerException the addition could not be completed
-     * @throws matrixSizeMismatchException the matrices that were compared were not of compatible sizes
-     */
-    public Matrix power(Matrix other) throws invalidPowerException, matrixSizeMismatchException {
-        // TODO: Implement power function
-        // TODO: Implement invalidPower exception
-        // TODO: Implement matrixSizeMismatch exception
-        // TODO: Implement matrixDivisionByZero exception
-    }
-
-    /**
-     * Raise the current matrix to the power of a constant
-     * @param constant {@code double}
-     * @return {@code Matrix} the output of the addition
-     * @throws invalidPowerException the addition could not be completed
-     */
-    public Matrix power(double constant) throws invalidPowerException {
-        // TODO: Implement power function
-        // TODO: Implement invalidPower exception
-        // TODO: Implement matrixSizeMismatch exception
-        // TODO: Implement matrixDivisionByZero exception
-    }
-
-    /**
-     * Add an additional matrix to the current matrix in a scalar fashion
-     * @param other {@code Matrix}
-     * @return {@code Matrix} the output of the addition
-     * @throws invalidLogarithmicException the addition could not be completed
-     * @throws matrixSizeMismatchException the matrices that were compared were not of compatible sizes
-     */
-    public Matrix log(Matrix other) throws invalidLogarithmicException, matrixSizeMismatchException{
-        // TODO: Implement logarithm function
-        // TODO: Implement invalidLogarithm exception
-        // TODO: Implement matrixSizeMismatch exception
-    }
-
-    /**
-     * Add an additional matrix to the current matrix in a scalar fashion
-     * @param other {@code Matrix}
-     * @return {@code Matrix} the output of the addition
-     * @throws invalidLogarithmicException the addition could not be completed
-     * @throws matrixSizeMismatchException the matrices that were compared were not of compatible sizes
-     */
-    public Matrix log(double base, Matrix other) throws invalidLogarithmicException, matrixSizeMismatchException {
-        // TODO: Implement logarithm function
-        // TODO: Implement invalidLogarithm exception
-        // TODO: Implement matrixSizeMismatch exception
-        // TODO: Implement invalidBase exception
-        // TODO: Implement matrixDivisionByZero exception
-    }
-
-    /**
-     * Add an additional matrix to the current matrix in a scalar fashion
-     * @param constant {@code double}
-     * @return {@code Matrix} the output of the addition
-     * @throws invalidLogarithmicException the addition could not be completed
-     */
-    public Matrix log(double constant) throws invalidLogarithmicException, matrixSizeMismatchException{
-        // TODO: Implement logarithm function
-        // TODO: Implement invalidLogarithm exception
-        // TODO: Implement matrixSizeMismatch exception
-    }
-
-    /**
-     * Add an additional matrix to the current matrix in a scalar fashion
-     * @param constant {@code double}
-     * @param base {@code double}
-     * @return {@code Matrix} the output of the addition
-     * @throws invalidLogarithmicException the addition could not be completed
-     * @throws matrixSizeMismatchException the matrices that were compared were not of compatible sizes
-     */
-    public Matrix log(double base, double constant) throws invalidLogarithmicException, matrixSizeMismatchException {
-        // TODO: Implement logarithm function
-        // TODO: Implement invalidLogarithm exception
-        // TODO: Implement matrixSizeMismatch exception
-        // TODO: Implement invalidBase exception
-        // TODO: Implement matrixDivisionByZero exception
+    public Matrix scalarMultiply(Matrix other) throws invalidScalarMultiplicationException, matrixSizeMismatchException, invalidArrayListSizeException, InvalidArrayBoundsException {
+        if (compareSizes(this, other)) throw new matrixSizeMismatchException("Matrices were not the same size");
+        ArrayList<Double> output = new ArrayList<Double>();
+        for (int i = 0 ; i < values.size(); i++) {
+            output.add(values.get(i)*other.getValue(i));
+        }
+        return new Matrix(width, height, output);
     }
 
     /******************************************************************************************************************
@@ -586,7 +512,7 @@ public class Matrix {
      * @return {@code boolean} if the matrix is square
      */
     public boolean isSquare() {
-        // TODO: Determine if a matrix is square in terms of dimensions
+        return width == height;
     }
 
     /**
@@ -626,6 +552,14 @@ public class Matrix {
     }
 
     /**
+     * Returns the dimension of the Matrix
+     * @return {@code int} The dimension of the matrix
+     */
+    public int dimension() {
+        return Math.max(width, height);
+    }
+
+    /**
      * Returns whether or not the rank of the matrix is the full rank
      * @return {@code boolean} the full rank
      */
@@ -637,9 +571,32 @@ public class Matrix {
      * Returns the determinant of a matrix
      * @return {@code double} the determinant
      */
-    public double determinant() {
+    public double determinant() throws InvalidArrayBoundsException, invalidArrayListSizeException {
+        return determinant(this);
+    }
+
+    /**
+     * Returns the determinant of a matrix recursively
+     * @param m {@code m} the matrix input
+     * @return {@code double} the determinant
+     */
+    public double determinant(Matrix m) throws InvalidArrayBoundsException, invalidArrayListSizeException {
         // TODO: Implement determinant calculation
         // TODO: Implement nonDeterminable exception
+
+        if(!isSquare()) throw invalidDeterminantException("Cannot calculate the Determinant")
+
+        double out = 0;
+        int sign = 1;
+        if (dimension() == 1) return getValue(0);
+        Matrix cf = Matrix.zeroes(dimension(), dimension());
+
+        for(int i = 0; i < dimension(); i++) {
+            cf = getCofactor(0, i);
+            out += sign * getValue(0, i) * determinant(cf);
+        }
+
+        return out;
     }
 
 
@@ -703,6 +660,14 @@ public class Matrix {
     }
 
     /**
+     * Print the matrix class in a nice format
+     * @return {@code String } the formatted output string
+     */
+    public String print() {
+
+    }
+
+    /**
      * Compare the matrix to another matrix
      * @param other
      * @return {@code int} the output matrix
@@ -712,6 +677,7 @@ public class Matrix {
         // TODO: Implement matrixSizeMismatch exception
     }
 
+    @Override
     public int hashCode() {
         // TODO: Implement hashing function
     }
@@ -719,5 +685,84 @@ public class Matrix {
     public boolean equals(Matrix other) {
         // TODO: Implement equals function
         // TODO: Implement matrixSizeMismatch exception
+    }
+
+    public String debugInformation() {
+        // TODO: Write reflection debug output
+    }
+
+    public ArrayList<Double> data() {
+        return values;
+    }
+
+    private static boolean compareSizes(Matrix a, Matrix b) {
+        return (a.getHeight() == b.getHeight() && a.getWidth() == b.getWidth());
+    }
+
+    /**
+     * Calculates the dot product of row in Matrix A and a column in Matrix B
+     * @param row
+     * @param column
+     * @param other
+     * @return
+     */
+    private double rowColumnDotProduct(int row, int column, Matrix other) throws InvalidArrayBoundsException, invalidArrayListSizeException {
+        double sum = 0;
+        for (int i = 0; i < getHeight(); i++) {
+            sum += getValue(i, row)*other.getValue(i, column);
+        }
+        return sum;
+    }
+
+    /**
+     * Returns the Cofactor of a given matrix
+     * Code reformatted and taken from https://www.geeksforgeeks.org/determinant-of-a-matrix/
+     * @param p
+     * @param q
+     * @return
+     * @throws invalidArrayListSizeException
+     * @throws InvalidArrayBoundsException
+     */
+    private Matrix getCofactor(int p, int q) throws invalidArrayListSizeException, InvalidArrayBoundsException {
+        int i = 0;
+        int j = 0;
+        int dim = dimension();
+
+        Matrix Out = Matrix.zeroes(width, height);
+
+        for (int row = 0; row < dim; row++) {
+            row (int col = 0; col < dim; col++) {
+                if (row != p && col != q) {
+                    Out.setValue(i, j++, getValue(row, col));
+                    if (j == dim - 1) {
+                        j = 0;
+                        i++;
+                    }
+                }
+            }
+        }
+
+        return Out;
+    }
+
+    public static Matrix zeroes(int w, int h) throws invalidArrayListSizeException {
+        Double[] data = new Double[w*h];
+        Arrays.fill(data, 0d);
+        ArrayList<Double> out = (ArrayList<Double>) Arrays.asList(data);
+        return new Matrix(w, h, out);
+    }
+
+    public static Matrix ones(int w, int h) throws invalidArrayListSizeException {
+        Double[] data = new Double[w*h];
+        Arrays.fill(data, 1d);
+        ArrayList<Double> out = (ArrayList<Double>) Arrays.asList(data);
+        return new Matrix(w, h, out);
+    }
+
+    public static Matrix constant(int w, int h, double constant) throws invalidArrayListSizeException {
+        Double[] data = new Double[w*h];
+        Arrays.fill(data, constant);
+        ArrayList<Double> out = (ArrayList<Double>) Arrays.asList(data);
+        return new Matrix(w, h, out);
     }
 }
