@@ -13,8 +13,7 @@
  */
 package Math;
 
-import java.io.Serializable;
-import java.lang.reflect.Array;
+import java.io.*;
 import java.util.*;
 
 
@@ -22,10 +21,11 @@ import java.util.*;
 // TODO: Generate documentation for the exceptions
 // TODO: Actually fill out method functionality
 // TODO: Change variable type from Double to generic
+
 /**
  * Matrix class
  */
-public class Matrix implements Serializable {
+public class Matrix implements Serializable, Comparable<Matrix> {
 
     /******************************************************************************************************************
      * Variables
@@ -51,19 +51,6 @@ public class Matrix implements Serializable {
      */
     protected int height;
 
-    /**
-     * The rank of the matrix
-     * @see Integer
-     */
-    protected int rank;
-
-    /**
-     * the current matrix status
-     * @see Integer
-     */
-    protected boolean changed;
-
-
     /******************************************************************************************************************
      * CONSTRUCTORS
      */
@@ -73,15 +60,12 @@ public class Matrix implements Serializable {
      * @param w {@code int} the width of the matrix
      * @param h {@code int} the height of the matrix
      * @param values {@code ArrayList<Double>} the matrix values
-     * @throws invalidArrayListSizeException is thrown if the {@code Arraylist} does not match the size of the spcified values {@code w*h}
+     * @throws invalidArrayListSizeException {@code ArrayList} is thrown if the ArrayList
+     * does not match the size of the specified values {@code w*h}
      */
     public Matrix(int w, int h, ArrayList<Double> values) throws invalidArrayListSizeException {
-        if (w <= 0) {
-            throw new invalidArrayListSizeException("Matrix width too small");
-        }
-        else if (h <= 0) {
-            throw new invalidArrayListSizeException("Matrix height too small");
-        }
+        if (w <= 0) throw new invalidArrayListSizeException("Matrix width too small");
+        else if (h <= 0) throw new invalidArrayListSizeException("Matrix height too small");
         else if (w*h != values.size()) {
             int expected = w*h;
             int actual = values.size();
@@ -92,7 +76,7 @@ public class Matrix implements Serializable {
             this.width  = w;
             this.height = h;
             this.values = values;
-            System.out.println("Created Matrix succesfully");
+            System.out.println("Created Matrix successfully");
         }
     }
 
@@ -103,11 +87,11 @@ public class Matrix implements Serializable {
      * @param h {@code int} the height of the matrix
      * @param values {@code Double...} the matrix values
      *
-     * @throws invalidArrayListSizeException {@code ArrayList<Double>} is thrown if the Arraylist
-     * does not match the size of the spcified values w*h
+     * @throws invalidArrayListSizeException {@code ArrayList<Double>} is thrown if the ArrayList
+     * does not match the size of the specified values w*h
      */
     public Matrix(int w, int h, Double... values) throws invalidArrayListSizeException {
-        this(w, h, new ArrayList<Double>(Arrays.asList(values)));
+        this(w, h, new ArrayList<>(Arrays.asList(values)));
     }
 
     /******************************************************************************************************************
@@ -119,8 +103,11 @@ public class Matrix implements Serializable {
      * @param x {@code int} the x coordinate of the value within the matrix
      * @param y {@code int} the y coordinate of the value within the matrix
      * @return {@code double} the value stored at the specified coordinates
+     * @throws InvalidArrayBoundsException {@code ArrayList<Double>} is thrown if the ArrayList
+     * index is outside the internal bounds
+     * @throws invalidArrayListSizeException {@code ArrayList<Double>} is thrown if the ArrayList
+     * does not match the size of the specified values w*h
      * @see Double
-     * @throws invalidArrayListSizeException
      */
     public double getValue(int x, int y) throws InvalidArrayBoundsException, invalidArrayListSizeException {
         if(this.checkXYBounds(x, y)) throw new InvalidArrayBoundsException("Invalid matrix getValue parameters");
@@ -132,7 +119,8 @@ public class Matrix implements Serializable {
      * @param index {@code int} the position of the value within the matrix
      * @return {@code double} the value stored at the specified coordinates
      * @see Double
-     * @throws invalidArrayListSizeException
+     * @throws InvalidArrayBoundsException {@code ArrayList<Double>} is thrown if the ArrayList
+     * index is outside the internal bounds
      */
     public double getValue(int index) throws InvalidArrayBoundsException {
         if (index < 0 || index >= values.size()) {
@@ -145,12 +133,11 @@ public class Matrix implements Serializable {
      * Set a given value for a specified set of coordinate
      * @param x {@code int} the x coordinate of the value within the matrix
      * @param y {@code int} the y coordinate of the value within the matrix
-     * @double value {@code double} tje value to be set at the specified coordanates
-     * @throws invalidArrayBoundsException if x or y are outside of the matrix size bounds
-     * @throws invalidArrayListSizeException the specified list size does not match what is on record
+     * @throws InvalidArrayBoundsException is thrown if the ArrayList
+     * index is outside the internal bounds
      * @see Double
      */
-    public double setValue(int x, int y, double value) throws invalidArrayBoundsException, invalidArrayListSizeException, InvalidArrayBoundsException {
+    public void setValue(int x, int y, double value) throws  InvalidArrayBoundsException, InvalidArrayBoundsException {
         if (this.checkXYBounds(x, y)) throw new InvalidArrayBoundsException("Invalid matrix setValue parameters");
         int index = this.XYtoIndex(x, y);
         values.set(index, value);
@@ -161,7 +148,7 @@ public class Matrix implements Serializable {
      * @return {@code int} the width of the matrix
      */
     public int getWidth() {
-        return this.width;
+        return width;
     }
 
     /**
@@ -169,7 +156,7 @@ public class Matrix implements Serializable {
      * @return {@code int} the height of the matrix
      */
     public int getHeight() {
-        return this.height;
+        return height;
     }
 
 
@@ -184,10 +171,10 @@ public class Matrix implements Serializable {
      * @param w {@code int} the width of the window
      * @param h {@code int} the height of the window
      * @return {@code double[]} the Matrix representing the window specified
-     * @throws invalidWindowBoundsException invalid window bounds
+     * @throws InvalidArrayBoundsException invalid window bounds
      */
-    public Double[] getWindowArray(int x, int y, int w, int h) throws invalidWindowBoundsException, invalidArrayListSizeException {
-        if(this.checkXYBounds(x, y)) throw invalidWindowBoundsException;
+    public ArrayList<Double> getWindowArray(int x, int y, int w, int h) throws InvalidArrayBoundsException, invalidArrayListSizeException {
+        if(this.checkXYBounds(x, y)) throw new InvalidArrayBoundsException("Invalid Window Bounds: (" + x + ", " + y + ")");
         int nValues = x*y;
         ArrayList<Double> values = new ArrayList<Double>();
         for(int i = x; i < x + w; i++) {
@@ -195,7 +182,7 @@ public class Matrix implements Serializable {
                 values.add(doubleXYtoIndex(i, j));
             }
         }
-        return values.toArray(new Double[values.size()]);
+        return values;
     }
 
     /**
@@ -205,11 +192,11 @@ public class Matrix implements Serializable {
      * @param w {@code int} the width of the window
      * @param h {@code int} the height of the window
      * @return {@code Matrix} the Matrix representing the window specified
-     * @throws invalidWindowBoundsException invalid window bounds
+     * @throws InvalidArrayBoundsException invalid window bounds
      * @see Matrix
      */
-    public Matrix getWindowMatrix(int x, int y, int w, int h) throws invalidWindowBoundsException,
-            invalidArrayListSizeException {
+    public Matrix getWindowMatrix(int x, int y, int w, int h) throws invalidArrayListSizeException,
+                InvalidArrayBoundsException {
         return new Matrix(w, h, this.getWindowArray(x, y, w, h));
     }
 
@@ -218,9 +205,9 @@ public class Matrix implements Serializable {
      * @param x {@code int} the bottom-left X dimension corner of the window
      * @param y {@code int} the bottom-left Y dimension corner of the window
      * @param m {@code Matrix} the substituting matrix
-     * @throws invalidWindowBoundsException invalid window bounds
+     * @throws InvalidArrayBoundsException invalid window bounds
      */
-    public void setWindow(int x, int y, Matrix m) throws invalidWindowBoundsException, InvalidArrayBoundsException, invalidArrayListSizeException {
+    public void setWindow(int x, int y, Matrix m) throws InvalidArrayBoundsException, InvalidArrayBoundsException, invalidArrayListSizeException {
         for (int i = x; i <= x+getWidth(); i++) {
             for (int j = y; j <= y+getHeight(); j++) {
                 setValue(i, j, m.getValue(m.getWidth()-i, m.getHeight()-y));
@@ -234,10 +221,10 @@ public class Matrix implements Serializable {
      * @param y {@code int} the bottom-left Y dimension corner of the window
      * @param w {@code int} the width of the window
      * @param h {@code int} the height of the window
-     * @throws invalidWindowBoundsException invalid window bounds
+     * @throws InvalidArrayBoundsException invalid window bounds
      * @throws InvalidArrayBoundsException if x or y are outside of the matrix size bounds
      */
-    public void setWindow(int x, int y, int w, int h, Double... data) throws invalidWindowBoundsException, InvalidArrayBoundsException, invalidArrayListSizeException {
+    public void setWindow(int x, int y, int w, int h, Double... data) throws InvalidArrayBoundsException, InvalidArrayBoundsException, invalidArrayListSizeException {
         this.setWindow(x, y, new Matrix(w, h, data));
     }
 
@@ -262,7 +249,7 @@ public class Matrix implements Serializable {
      * @return {@code Matrix} the returned column
      * @throws invalidColumnException if x is outside of the matrix size bounds
      */
-    public Matrix getColumn(int x) throws invalidColumnException {
+    public Matrix getColumn(int x) throws invalidColumnException, invalidArrayListSizeException {
         if (checkXYBounds(x, 0)) throw new invalidColumnException("Invalid Column: " + x);
         return new Matrix(1, getHeight(), values.subList(XYtoIndex(x, 0)), XYtoIndex(x+1, 0)-1);
     }
@@ -396,7 +383,7 @@ public class Matrix implements Serializable {
                 output.add(rowColumnDotProduct(i, j, other));
             }
         }
-        return new Matrix(width, other.getHeight())
+        return new Matrix(width, other.getHeight());
     }
 
     /**
@@ -405,7 +392,7 @@ public class Matrix implements Serializable {
      * @return {@code Matrix} the output of the addition
      * @throws invalidMultiplicationException the addition could not be completed
      */
-    public Matrix multiply(double constant) throws invalidMultiplicationException, matrixSizeMismatchException {
+    public Matrix multiply(double constant) throws invalidMultiplicationException, matrixSizeMismatchException, invalidArrayListSizeException {
         ArrayList<Double> output = new ArrayList<Double>();
         for (double value: values) {
             output.add(value*constant);
@@ -441,6 +428,7 @@ public class Matrix implements Serializable {
     public Matrix inverse() throws nonInversable {
         // TODO: Implement matrix inverse algorithm
         // TODO: Implement nonInversable exception
+        return null;
     }
 
     /**
@@ -451,6 +439,7 @@ public class Matrix implements Serializable {
     public Matrix leftInverse() throws nonInversable {
         // TODO: Implement Left Inverseing algorithm
         // TODO: Implement nonInversable exception
+        return null;
 
     }
 
@@ -462,14 +451,21 @@ public class Matrix implements Serializable {
     public Matrix rightInverse() throws nonInversable{
         // TODO: Implement Right Inverseing algorithm
         // TODO: Implement nonInversable exception
+        return null;
     }
 
     /**
      * Calculate the transpose of the input matrix
      * @return {@code Matrix} The transposed matrix
      */
-    public Matrix transpose() {
-        // TODO: Implement transposition algorithm
+    public Matrix transpose() throws invalidArrayListSizeException {
+        ArrayList<Double> out = new ArrayList<Double>();
+        for (int i = 0; i < getWidth(); i++) {
+            for (int j = 0; j < getHeight(); j++) {
+                out.add(values.get(XYtoIndex(j, i)));
+            }
+        }
+        return new Matrix(getHeight(), getWidth(), out);
     }
 
     /**
@@ -478,17 +474,26 @@ public class Matrix implements Serializable {
      * @return {@code double} the dot product of the two matrices
      * @throws matrixSizeMismatchException the matrices are not of the same size
      */
-    public double dotProduct(Matrix other) throws matrixSizeMismatchException {
-        // TODO: Implement dotProduct Algorithm
-        // TODO: Implement matrixSizeMismatch exception
+    public double dotProduct(Matrix other) throws matrixSizeMismatchException, InvalidArrayBoundsException {
+        if (compareSizes(this, other)) throw new matrixSizeMismatchException("Matrix sizes don't match");
+        double product = 0;
+        for (int i = 0; i < other.getWidth()*getHeight(); i++) {
+            product += other.getValue(i)*getValue(i);
+        }
+        return product;
     }
 
     /**
      * Normalize the current matrix
      * @return {@code Matrix} a normalized copy of the input
      */
-    public Matrix normalize() {
-        // TODO: Implement the normalization algorithm
+    public Matrix normalize() throws invalidArrayListSizeException {
+        double magnitude = magnitude();
+        ArrayList<Double> out = new ArrayList<Double>();
+        for (int i = 0; i < width*height; i++) {
+            out.add(values.get(i)/magnitude);
+        }
+        return new Matrix(getWidth(), getHeight(), out);
     }
 
     /**
@@ -497,6 +502,11 @@ public class Matrix implements Serializable {
      */
     public double magnitude() {
         // TODO: Implement the magnitude algorithm
+        double mag = 0;
+        for (double v: values) {
+            mag += v*v;
+        }
+        return Math.sqrt(mag);
     }
 
     /**
@@ -584,7 +594,7 @@ public class Matrix implements Serializable {
         // TODO: Implement determinant calculation
         // TODO: Implement nonDeterminable exception
 
-        if(!isSquare()) throw invalidDeterminantException("Cannot calculate the Determinant")
+        if(!isSquare()) throw invalidDeterminantException("Cannot calculate the Determinant");
 
         double out = 0;
         int sign = 1;
@@ -608,7 +618,7 @@ public class Matrix implements Serializable {
      * @throws invalidCrossProductDimensionsException the matrix could not calculate the cross product
      * @throws matrixSizeMismatchException the matrix sizes were not valid
      */
-    public Matrix CrossProduct(Matrix other) throws invalidCrossProductDimensionsException, matrixSizeMismatchException{
+    public Matrix CrossProduct(Matrix other) throws invalidCrossProductDimensionsException, matrixSizeMismatchException {
         // TODO: Implement cross product implementation
         // TODO: Implement invalidCrossProductDimensions exception
         // TODO: Implement matrixSizeMismatch exception
@@ -618,6 +628,14 @@ public class Matrix implements Serializable {
      * Additional functions
      */
 
+    /**
+     * Return a square matrix composed of the minimal number of elements leaning left
+     * @return {@code Matrix}
+     */
+    public Matrix squareSubmatrix() throws InvalidArrayBoundsException, invalidArrayListSizeException {
+        if(height > width) return getWindowMatrix(0,0,width,width);
+        else return getWindowMatrix(0,0,height,height);
+    }
 
     /**
      * Convert from a 2D coordanate space to a single Dimensional space
@@ -657,14 +675,30 @@ public class Matrix implements Serializable {
      */
     public String toString() {
         // TODO: Implement toString implementation
+        try {
+            return print();
+        } catch (invalidArrayListSizeException e) {
+            e.printStackTrace();
+        }
     }
 
     /**
      * Print the matrix class in a nice format
      * @return {@code String } the formatted output string
      */
-    public String print() {
-
+    public String print() throws invalidArrayListSizeException {
+        StringBuilder out;
+        out = new StringBuilder("[");
+        for (int i = 0; i < getHeight(); i++) {
+            out.append("[");
+            out.append(values.get(XYtoIndex(0, i)));
+            for (int j = 1; j < getWidth(); j++) {
+                out.append(", ");
+                out.append(values.get(XYtoIndex(j, i)));
+            }
+            out.append("]\n");
+        }
+        return out.toString();
     }
 
     /**
@@ -675,19 +709,30 @@ public class Matrix implements Serializable {
     public int compareTo(Matrix other) {
         // TODO: Implement compareTo implementation
         // TODO: Implement matrixSizeMismatch exception
+        if (!compareSizes(this, other))
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Matrix matrix = (Matrix) o;
+        return width == matrix.width &&
+                height == matrix.height &&
+                Objects.equals(values, matrix.values);
     }
 
     @Override
     public int hashCode() {
-        // TODO: Implement hashing function
+        int hash = 1;
+        hash = hash * 17 + width;
+        hash = hash * 31 + values.hashCode();
+        hash = hash * 13 + height;
+        return hash;
     }
 
-    public boolean equals(Matrix other) {
-        // TODO: Implement equals function
-        // TODO: Implement matrixSizeMismatch exception
-    }
 
-    public String debugInformation() {
+    public String debug() {
         // TODO: Write reflection debug output
     }
 
@@ -714,6 +759,26 @@ public class Matrix implements Serializable {
         return sum;
     }
 
+    private boolean zeroRow(int row) throws invalidArrayListSizeException {
+        double sum = 0;
+        for (int i = 0; i < width; i++) {
+            sum += doubleXYtoIndex(row, i);
+        }
+        return sum == 0;
+    }
+
+    private boolean zeroColumn(int column) throws invalidArrayListSizeException {
+        double sum = 0;
+        for (int i = 0; i < height; i++) {
+            sum += doubleXYtoIndex(i, column);
+        }
+        return sum == 0;
+    }
+
+    private boolean stripZeros() {
+
+    }
+
     /**
      * Returns the Cofactor of a given matrix
      * Code reformatted and taken from https://www.geeksforgeeks.org/determinant-of-a-matrix/
@@ -731,7 +796,7 @@ public class Matrix implements Serializable {
         Matrix Out = Matrix.zeroes(width, height);
 
         for (int row = 0; row < dim; row++) {
-            row (int col = 0; col < dim; col++) {
+            for (int col = 0; col < dim; col++) {
                 if (row != p && col != q) {
                     Out.setValue(i, j++, getValue(row, col));
                     if (j == dim - 1) {
@@ -762,7 +827,27 @@ public class Matrix implements Serializable {
     public static Matrix constant(int w, int h, double constant) throws invalidArrayListSizeException {
         Double[] data = new Double[w*h];
         Arrays.fill(data, constant);
+
         ArrayList<Double> out = (ArrayList<Double>) Arrays.asList(data);
         return new Matrix(w, h, out);
     }
+
+    public void writeObject(ObjectOutputStream out) throws IOException {
+
+    }
+
+    public void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException {
+
+    }
+
+    public void readObjectNoData() throws ObjectStreamException {
+
+    }
+
+    public void delete() {
+        width = 0;
+        height = 0;
+        values = new ArrayList<Double>();
+    }
+
 }

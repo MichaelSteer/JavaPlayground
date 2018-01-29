@@ -64,16 +64,4 @@ public class Complex {
     public Complex conjugate() {
         return new Complex(re, -im);
     }
-
-    public Complex power() {
-
-    }
-
-    public Complex sin() {
-        double real = Math.sin(re) * Math.cosh(im);
-        double imaginary = Math.cos(re) * Math.sinh(im);
-        return new Complex(real, imaginary);
-    }
-
-
 }

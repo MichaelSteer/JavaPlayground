@@ -1,6 +1,11 @@
 package Math;
 
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -11,160 +16,74 @@ import static org.junit.jupiter.api.Assertions.*;
 
 class MatrixjUnitTest {
 
-    @org.junit.jupiter.api.BeforeEach
+    ArrayList<Double> ArrayListValuesA;
+    ArrayList<Double> ArrayListValuesB;
+    Double[] DoubleValuesA;
+    Double[] DoubleValuesB;
+
+    double Constant;
+
+    Matrix A, B;
+
+    Matrix sum;
+    Matrix difference;
+    Matrix aConstantSum;
+    Matrix bConstantSum;
+    Matrix aConstantDifference;
+    Matrix bConstantDifference;
+    Matrix aProduct;
+    Matrix bProduct;
+    Matrix product;
+    Matrix scalarProduct;
+    Matrix aInverse;
+    Matrix bInverse;
+    Matrix aTranspose;
+    Matrix bTranspose;
+    Matrix aDotP;
+    Matrix bDotP;
+    Matrix scalarDotP;
+    Matrix aNormalized;
+    Matrix bNormalized;
+    Matrix aref;
+    Matrix bref;
+    Matrix arref;
+    Matrix brref;
+
+
+
+    @BeforeEach
     void setUp() {
-    }
+        ArrayList<Double> ArrayListValuesA = new ArrayList<Double>();
+        Double[] DoubleValuesA;
 
-    @org.junit.jupiter.api.AfterEach
-    void tearDown() {
-    }
+        DoubleValuesA = new Double[]   { 1d,   1d,   2d,   3d,   5d,
+                                        8d,   13d,  21d,  34d,  55d,
+                                        89d,  144d, 233d, 377d, 610d,
+                                        377d, 233d, 144d, 89d,  55d,
+                                        34d,  21d,  13d,  8d,   5d    };
+
+        ArrayListValuesA = (ArrayList<Double>) Arrays.asList(DoubleValuesA);
 
 
-    @Test
-    void getValue() {
-    }
+        ArrayList<Double> ArrayListValuesB = new ArrayList<Double>();
+        Double[] DoubleValuesB;
 
-    @Test
-    void setValue() {
-    }
+        DoubleValuesB = new Double[]   { 3d,    1d,   4d,   1d,   5d,
+                                         9d,    2d,   4d,   6d,   8d,
+                                         9d,    1d,   1d,   4d,   2d,
+                                         420d,  20d,  0d,   6d,   9d,
+                                         -13d, -21d, -34d, -55d, -89d };
 
-    @Test
-    void getWindow() {
-    }
+        ArrayListValuesB = (ArrayList<Double>) Arrays.asList(DoubleValuesB);
 
-    @Test
-    void getWindow1() {
-    }
+        try {
+            A = new Matrix(5, 5, ArrayListValuesA);
+            B = new Matrix(5, 5, ArrayListValuesB);
 
-    @Test
-    void setWindow() {
-    }
+            A.
+        } catch (invalidArrayListSizeException e) {
+            e.printStackTrace();
+        }
 
-    @Test
-    void setWindow1() {
-    }
-
-    @Test
-    void getRow() {
-    }
-
-    @Test
-    void getColumn() {
-    }
-
-    @Test
-    void setRow() {
-    }
-
-    @Test
-    void setColumn() {
-    }
-
-    @Test
-    void add() {
-    }
-
-    @Test
-    void sub() {
-    }
-
-    @Test
-    void multiply() {
-    }
-
-    @Test
-    void multiplyScalar() {
-    }
-
-    @Test
-    void divide() {
-    }
-
-    @Test
-    void power() {
-    }
-
-    @Test
-    void log() {
-    }
-
-    @Test
-    void log1() {
-    }
-
-    @Test
-    void inverse() {
-    }
-
-    @Test
-    void leftInverse() {
-    }
-
-    @Test
-    void rightInverse() {
-    }
-
-    @Test
-    void transpose() {
-    }
-
-    @Test
-    void dotProduct() {
-    }
-
-    @Test
-    void normalize() {
-    }
-
-    @Test
-    void magnitude() {
-    }
-
-    @Test
-    void isDiagonalizable() {
-    }
-
-    @Test
-    void isSquare() {
-    }
-
-    @Test
-    void ref() {
-    }
-
-    @Test
-    void rref() {
-    }
-
-    @Test
-    void rank() {
-    }
-
-    @Test
-    void isFullRank() {
-    }
-
-    @Test
-    void determinant() {
-    }
-
-    @Test
-    void crossProduct() {
-    }
-
-    @Test
-    void toString() {
-    }
-
-    @Test
-    void compareTo() {
-    }
-
-    @Test
-    void hashCode() {
-    }
-
-    @Test
-    void equals() {
     }
 }
