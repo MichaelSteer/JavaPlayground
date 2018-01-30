@@ -78,7 +78,6 @@ public class Matrix implements Serializable, Cloneable {
             this.width  = w;
             this.height = h;
             this.values = values;
-            System.out.println("Created Matrix successfully");
         }
     }
 
@@ -662,8 +661,9 @@ public class Matrix implements Serializable, Cloneable {
      * @throws invalidArrayListSizeException the matrix size does not make sense
      */
     private int XYtoIndex(int x, int y) throws invalidArrayListSizeException {
-        if (checkXYBounds(x, y)) throw new invalidArrayListSizeException("Invalid Array bounds");
-        return x*width+height;
+        if (!checkXYBounds(x, y)) throw new invalidArrayListSizeException("Invalid Array bounds: x:" + x + ", y: " + y);
+        System.out.println("X- " + x + " Y- " + y + " Gives us: " + x*width+y);
+        return x*width+y;
     }
 
     /**
@@ -707,15 +707,32 @@ public class Matrix implements Serializable, Cloneable {
     public String print() throws invalidArrayListSizeException {
         StringBuilder out;
         out = new StringBuilder("[");
-        for (int i = 0; i < getHeight(); i++) {
-            out.append("[");
-            out.append(values.get(XYtoIndex(0, i)));
-            for (int j = 1; j < getWidth(); j++) {
-                out.append(", ");
-                out.append(values.get(XYtoIndex(j, i)));
-            }
-            out.append("]\n");
+
+        out.append(values.get(XYtoIndex(0, 0)));
+        for (int j = 1; j < height; j++) {
+            out.append(", ");
+            out.append(values.get(XYtoIndex(0, j)));
         }
+        out.append("\n");
+
+        for (int i = 1; i < width-1; i++) {
+            out.append(" ");
+            out.append(values.get(XYtoIndex(i, 0)));
+            for (int j = 1; j < height; j++) {
+                out.append(", ");
+                out.append(values.get(XYtoIndex(i, j)));
+            }
+            out.append("\n");
+        }
+
+        out.append(" ");
+        out.append(values.get(XYtoIndex(width-1, 0)));
+        for (int j = 1; j < height; j++) {
+            out.append(", ");
+            out.append(values.get(XYtoIndex(width-1, j)));
+        }
+        out.append("]");
+
         return out.toString();
     }
 
