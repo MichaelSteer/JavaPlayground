@@ -1,89 +1,248 @@
 package Math;
 
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-
 import static org.junit.jupiter.api.Assertions.*;
 
-
-// TODO: Document test
-// TODO: Implement tests
-// TODO: Get tests working
-
-class MatrixjUnitTest {
-
-    ArrayList<Double> ArrayListValuesA;
-    ArrayList<Double> ArrayListValuesB;
-    Double[] DoubleValuesA;
-    Double[] DoubleValuesB;
-
-    double Constant;
-
-    Matrix A, B;
-
-    Matrix sum;
-    Matrix difference;
-    Matrix aConstantSum;
-    Matrix bConstantSum;
-    Matrix aConstantDifference;
-    Matrix bConstantDifference;
-    Matrix aProduct;
-    Matrix bProduct;
-    Matrix product;
-    Matrix scalarProduct;
-    Matrix aInverse;
-    Matrix bInverse;
-    Matrix aTranspose;
-    Matrix bTranspose;
-    Matrix aDotP;
-    Matrix bDotP;
-    Matrix scalarDotP;
-    Matrix aNormalized;
-    Matrix bNormalized;
-    Matrix aref;
-    Matrix bref;
-    Matrix arref;
-    Matrix brref;
-
-
+class MatrixTest {
 
     @BeforeEach
     void setUp() {
-        ArrayList<Double> ArrayListValuesA = new ArrayList<Double>();
-        Double[] DoubleValuesA;
+    }
 
-        DoubleValuesA = new Double[]   { 1d,   1d,   2d,   3d,   5d,
-                                        8d,   13d,  21d,  34d,  55d,
-                                        89d,  144d, 233d, 377d, 610d,
-                                        377d, 233d, 144d, 89d,  55d,
-                                        34d,  21d,  13d,  8d,   5d    };
+    @AfterEach
+    void tearDown() {
+    }
 
-        ArrayListValuesA = (ArrayList<Double>) Arrays.asList(DoubleValuesA);
+    @Test
+    void getValue() {
+    }
+
+    @Test
+    void getValue1() {
+    }
+
+    @Test
+    void setValue() {
+    }
+
+    @Test
+    void getWidth() {
+    }
+
+    @Test
+    void getHeight() {
+    }
+
+    @Test
+    void getWindowArray() {
+    }
+
+    @Test
+    void getWindowMatrix() {
+    }
+
+    @Test
+    void setWindow() {
+    }
+
+    @Test
+    void setWindow1() {
+    }
+
+    @Test
+    void getRow() {
+    }
+
+    @Test
+    void getColumn() {
+    }
+
+    @Test
+    void setRow() {
+    }
+
+    @Test
+    void setColumn() {
+    }
+
+    @Test
+    void setRow1() {
+    }
+
+    @Test
+    void setColumn1() {
+    }
+
+    @Test
+    void addColumn() {
+    }
+
+    @Test
+    void addRow() {
+    }
+
+    @Test
+    void add() {
+    }
+
+    @Test
+    void add1() {
+    }
+
+    @Test
+    void sub() {
+    }
+
+    @Test
+    void sub1() {
+    }
+
+    @Test
+    void multiply() {
+    }
+
+    @Test
+    void multiply1() {
+    }
+
+    @Test
+    void scalarMultiply() {
+    }
+
+    @Test
+    void inverse() {
+    }
+
+    @Test
+    void transpose() {
+    }
+
+    @Test
+    void dotProduct() {
+    }
+
+    @Test
+    void normalize() {
+    }
+
+    @Test
+    void magnitude() {
+    }
+
+    @Test
+    void isDiagonalizable() {
+    }
+
+    @Test
+    void diagonalize() {
+    }
+
+    @Test
+    void isSquare() {
+    }
+
+    @Test
+    void isNormalized() {
+    }
+
+    @Test
+    void ref() {
+    }
+
+    @Test
+    void rref() {
+    }
+
+    @Test
+    void rank() {
+    }
+
+    @Test
+    void dimension() {
+    }
+
+    @Test
+    void isFullRank() {
+    }
+
+    @Test
+    void determinant() {
+    }
+
+    @Test
+    void determinant1() {
+    }
+
+    @Test
+    void squareSubmatrix() {
+    }
 
 
-        ArrayList<Double> ArrayListValuesB = new ArrayList<Double>();
-        Double[] DoubleValuesB;
+    @Test
+    void print() {
+    }
 
-        DoubleValuesB = new Double[]   { 3d,    1d,   4d,   1d,   5d,
-                                         9d,    2d,   4d,   6d,   8d,
-                                         9d,    1d,   1d,   4d,   2d,
-                                         420d,  20d,  0d,   6d,   9d,
-                                         -13d, -21d, -34d, -55d, -89d };
+    @Test
+    void equals() {
+    }
 
-        ArrayListValuesB = (ArrayList<Double>) Arrays.asList(DoubleValuesB);
+    @Test
+    void debug() {
+    }
 
-        try {
-            A = new Matrix(5, 5, ArrayListValuesA);
-            B = new Matrix(5, 5, ArrayListValuesB);
+    @Test
+    void data() {
+    }
 
-            A.
-        } catch (invalidArrayListSizeException e) {
-            e.printStackTrace();
-        }
+    @Test
+    void zeroes() {
+    }
 
+    @Test
+    void ones() {
+    }
+
+    @Test
+    void constant() {
+    }
+
+    @Test
+    void identity() {
+    }
+
+    @Test
+    void writeObject() {
+    }
+
+    @Test
+    void readObject() {
+    }
+
+    @Test
+    void readObjectNoData() {
+    }
+
+    @Test
+    void delete() {
+    }
+
+    @Test
+    void swapRows() {
+    }
+
+    @Test
+    void swapColumns() {
+    }
+
+    @Test
+    void swapValues() {
+    }
+
+
+    @Test
+    void appendRight() {
     }
 }
