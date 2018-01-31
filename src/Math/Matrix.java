@@ -1,40 +1,27 @@
-/**
- * File name: Matrix.java
- * Compilation: java Matrix.java
- * Execution: java Matrix.java < input.txt
- * Dependencies: None
- *
- * A Matrix implementaiton in Java done as a learning exercise for
- * writing java code
- *
- * @author Michael Steer
- * @version 1.0
- * @since 2018-01-22
- */
 package Math;
-
+import groovy.transform.NotYetImplemented;
 import java.io.*;
 import java.util.*;
-
 import static java.lang.Math.abs;
-
 
 // TODO: Fill out all Documentation
 // TODO: Generate documentation for the exceptions
-// TODO: Actually fill out method functionality
 // TODO: Change variable type from Double to generic
 
 /**
- * Matrix class
+ File name: Matrix.java
+ Compilation: java Matrix.java
+ Execution: java Matrix.java < input.txt
+ Dependencies: None
+
+ A Matrix implementation in Java done as a learning exercise for
+ writing java code
+
+ @author Michael Steer
+ @version 1.0
+ @since 2018-01-22
  */
 public class Matrix implements Serializable, Cloneable {
-
-    /******************************************************************************************************************
-     * Variables
-     */
-
-    public static final boolean CHECK_ERRORS = false;
-
     /**
      * The array of values that are stored within the matrix
      * @see ArrayList
@@ -53,12 +40,8 @@ public class Matrix implements Serializable, Cloneable {
      */
     private int height;
 
-    /******************************************************************************************************************
-     * CONSTRUCTORS
-     */
-
     /**
-     * Matrix arraylist constructor. This constructor takes in an {@code ArrayList<Double>} as its input.
+     * Matrix ArrayList constructor. This constructor takes in an {@code ArrayList<Double>} as its input.
      * @param w {@code int} the width of the matrix
      * @param h {@code int} the height of the matrix
      * @param values {@code ArrayList<Double>} the matrix values
@@ -82,7 +65,7 @@ public class Matrix implements Serializable, Cloneable {
     }
 
     /**
-     * Matrix arraylist constructor. This constructor takes in
+     * Matrix ArrayList constructor. This constructor takes in
      * an {@code ArrayList<Double>} as its input.
      * @param w {@code int} the width of the matrix
      * @param h {@code int} the height of the matrix
@@ -94,10 +77,6 @@ public class Matrix implements Serializable, Cloneable {
     public Matrix(int w, int h, Double... values) throws invalidArrayListSizeException {
         this(w, h, new ArrayList<>(Arrays.asList(values)));
     }
-
-    /******************************************************************************************************************
-     * Individual values
-     */
 
     /**
      * Return a given value for a specified set of coordinate
@@ -139,7 +118,7 @@ public class Matrix implements Serializable, Cloneable {
      * @see Double
      */
     public void setValue(int x, int y, double value) throws InvalidArrayBoundsException, InvalidArrayBoundsException, invalidArrayListSizeException {
-        if (this.checkXYBounds(x, y)) throw new InvalidArrayBoundsException("Invalid matrix setValue parameters");
+        if (this.checkXYBounds(x, y)) throw new InvalidArrayBoundsException("Invalid setValue matrix setValue parameters");
         int index = this.XYtoIndex(x, y);
         values.set(index, value);
     }
@@ -160,10 +139,42 @@ public class Matrix implements Serializable, Cloneable {
         return height;
     }
 
-
-    /******************************************************************************************************************
-     * SUB MATRICES
+    /**
+     * Swaps two rows within the matrix
+     * @param a {@code int} The first row
+     * @param b {@code int} The second row
+     * @throws invalidArrayListSizeException Thrown if either of the row indices lie outside of the existing rows
      */
+    public void swapRows(int a, int b) throws invalidArrayListSizeException {
+        double val;
+        for (int i = 0; i < getWidth(); i++) {
+            swapValues(XYtoIndex(i, a), XYtoIndex(i, b));
+        }
+    }
+
+    /**
+     * Swaps two columns within the matrix
+     * @param a {@code int} The first column
+     * @param b {@code int} The second column
+     * @throws invalidArrayListSizeException Thrown if either of the row indices lie outside of the existing rows
+     */
+    public void swapColumns(int a, int b) throws invalidArrayListSizeException {
+        double val;
+        for (int i = 0; i < getHeight(); i++) {
+            swapValues(XYtoIndex(a, i), XYtoIndex(b, i));
+        }
+    }
+
+    /**
+     * Swaps two values within the matrix based on index
+     * @param a {@code int} The first value
+     * @param b {@code int} The second value
+     */
+    public void swapValues(int a, int b) {
+        double val = values.get(b);
+        values.set(b, values.get(a));
+        values.set(a, val);
+    }
 
     /**
      * Return a double array representing a given specified window from x, y, w, h
@@ -177,7 +188,7 @@ public class Matrix implements Serializable, Cloneable {
     public ArrayList<Double> getWindowArray(int x, int y, int w, int h) throws InvalidArrayBoundsException, invalidArrayListSizeException {
         if(this.checkXYBounds(x, y)) throw new InvalidArrayBoundsException("Invalid Window Bounds: (" + x + ", " + y + ")");
         int nValues = x*y;
-        ArrayList<Double> values = new ArrayList<Double>();
+        ArrayList<Double> values = new ArrayList<>();
         for(int i = x; i < x + w; i++) {
             for (int j = y; j < y + h; j++) {
                 values.add(doubleXYtoIndex(i, j));
@@ -237,7 +248,7 @@ public class Matrix implements Serializable, Cloneable {
      */
     public Matrix getRow(int y) throws invalidRowException, invalidArrayListSizeException {
         if (checkXYBounds(0, y)) throw new invalidRowException("Invalid Row: " + y);
-        ArrayList<Double> row = new ArrayList<Double>();
+        ArrayList<Double> row = new ArrayList<>();
         for(int i = 0; i < values.size(); i += getHeight()) {
             row.add(values.get(i));
         }
@@ -278,7 +289,7 @@ public class Matrix implements Serializable, Cloneable {
      * @param y {@code int} the requested column
      * @throws invalidRowException if y is outside of the matrix size bounds
      */
-    public void setRow(int y, ArrayList<Double> row) throws invalidRowException, InvalidArrayBoundsException, invalidArrayListSizeException {
+    public void setRow(int y, ArrayList<Double> row) throws invalidRowException, invalidArrayListSizeException {
         if (checkXYBounds(0, y)) throw new invalidRowException("Invalid Row: " + y);
         int element = 0;
         for(int i = 0; i < values.size(); i += getHeight()) {
@@ -292,7 +303,7 @@ public class Matrix implements Serializable, Cloneable {
      * @param x {@code int} the requested column
      * @throws invalidColumnException if x is outside of the matrix size bounds
      */
-    public void setColumn(int x, ArrayList<Double> column) throws invalidColumnException, InvalidArrayBoundsException, invalidArrayListSizeException {
+    public void setColumn(int x, ArrayList<Double> column) throws invalidColumnException, invalidArrayListSizeException {
         if (checkXYBounds(x, 0)) throw new invalidColumnException("Invalid Column: " + x);
         int element = 0;
         for (int i = 0; i < column.size(); i++) {
@@ -301,6 +312,14 @@ public class Matrix implements Serializable, Cloneable {
         }
     }
 
+    /**
+     * Add a column to the current matrix
+     * @param column {@code Matrix} the column to add to the current matrix, in matrix form
+     * @param index {@code int} the index that the column will be added at
+     * @return {@code Matrix} the corresponding matrix that is returned
+     * @throws InvalidArrayBoundsException The index bounds for the column were incorrect or out of bounds
+     * @throws invalidArrayListSizeException The Array size does not match the specified sizes after modification
+     */
     public Matrix addColumn(Matrix column, int index) throws InvalidArrayBoundsException, invalidArrayListSizeException {
         ArrayList<Double> data = data();
         for (int i = 0; i < height; i++) {
@@ -309,6 +328,14 @@ public class Matrix implements Serializable, Cloneable {
         return new Matrix(width+1, height, data);
     }
 
+    /**
+     * Add a row to the current matrix
+     * @param row {@code Matrix} the row to add to the current matrix, in matrix form
+     * @param index {@code int} the index that the column will be added at
+     * @return {@code Matrix} the corresponding matrix that is returned
+     * @throws InvalidArrayBoundsException The index bounds for the column were incorrect or out of bounds
+     * @throws invalidArrayListSizeException The Array size does not match the specified sizes after modification
+     */
     public Matrix addRow(Matrix row, int index) throws InvalidArrayBoundsException, invalidArrayListSizeException {
         ArrayList<Double> data = data();
         for (int i = 0; i < width; i++) {
@@ -319,31 +346,32 @@ public class Matrix implements Serializable, Cloneable {
 
     /**
      * Add an additional matrix to the current matrix in a scalar fashion
-     * @param other {@code Matrix}
+     * @param other {@code Matrix} the matrix being added
      * @return {@code Matrix} the output of the addition
      * @throws invalidAdditionException the addition could not be completed
      * @throws matrixSizeMismatchException the matrices that were compared were not of compatible sizes
      */
-    public Matrix add(Matrix other) throws invalidAdditionException, matrixSizeMismatchException, invalidArrayListSizeException, InvalidArrayBoundsException {
-        if (compareSizes(this, other)) throw new matrixSizeMismatchException("Matrices were not the same size");
-        ArrayList<Double> output = new ArrayList<Double>();
+    public Matrix add(Matrix other) throws matrixSizeMismatchException, invalidArrayListSizeException, InvalidArrayBoundsException {
+        if (!compareSizes(this, other)) throw new matrixSizeMismatchException("Matrices were not the same size");
+        ArrayList<Double> output = new ArrayList<>();
         for (int i = 0 ; i < values.size(); i++) {
             output.add(values.get(i)+other.getValue(i));
         }
         return new Matrix(width, height, output);
     }
 
-    /******************************************************************************************************************
-     * Arithemetic
+    /*------------------------------------------------------------------------------------------------------------------
+     * Arithmetic Functionality
      */
 
     /**
      * Add a constant to all values of the current matrix
-     * @param constant {@code double}
+     * @param constant {@code double} the constant being added
      * @return {@code Matrix} the output of the addition
+     * @throws invalidArrayListSizeException The Array list size does not match the width and height specification
      */
     public Matrix add(double constant) throws invalidArrayListSizeException {
-        ArrayList<Double> output = new ArrayList<Double>();
+        ArrayList<Double> output = new ArrayList<>();
         for (double value: values) {
             output.add(value+constant);
         }
@@ -352,7 +380,7 @@ public class Matrix implements Serializable, Cloneable {
 
     /**
      * Subtract an additional matrix to the current matrix in a scalar fashion
-     * @param other {@code Matrix}
+     * @param other {@code Matrix} the matrix being subtracted
      * @return {@code Matrix} the output of the subtraction
      * @throws matrixSizeMismatchException the matrices that were compared were not of compatible sizes
      */
@@ -367,7 +395,7 @@ public class Matrix implements Serializable, Cloneable {
 
     /**
      * Subtract a constant from all values of the current matrix
-     * @param constant {@code double}
+     * @param constant {@code double} the constant being subtracted
      * @return {@code Matrix} the output of the subtraction
      */
     public Matrix sub(double constant) throws invalidArrayListSizeException {
@@ -380,7 +408,7 @@ public class Matrix implements Serializable, Cloneable {
 
     /**
      * Multiply an additional matrix to the current matrix in a traditional matrix multiplication sense
-     * @param other {@code Matrix}
+     * @param other {@code Matrix} the matrix being multiplied
      * @return {@code Matrix} the output of the multiplication
      * @throws matrixSizeMismatchException the matrices that were compared were not of compatible sizes
      */
@@ -397,10 +425,10 @@ public class Matrix implements Serializable, Cloneable {
 
     /**
      * Multiply the current matrix by a constant
-     * @param constant {@code double}
+     * @param constant {@code double} the constant being multiplied
      * @return {@code Matrix} the output of the addition
      */
-    public Matrix multiply(double constant) throws matrixSizeMismatchException, invalidArrayListSizeException {
+    public Matrix multiply(double constant) throws invalidArrayListSizeException {
         ArrayList<Double> output = new ArrayList<>();
         for (double value: values) {
             output.add(value*constant);
@@ -410,21 +438,20 @@ public class Matrix implements Serializable, Cloneable {
 
     /**
      * multiply an additional matrix by the current matrix in a scalar fashion
-     * @param other {@code Matrix}
+     * @param other {@code Matrix} the matrix being multiplied in a scalar fashion
      * @return {@code Matrix} the output of the addition
-     * @throws invalidScalarMultiplicationException the addition could not be completed
      * @throws matrixSizeMismatchException the matrices that were compared were not of compatible sizes
      */
-    public Matrix scalarMultiply(Matrix other) throws invalidScalarMultiplicationException, matrixSizeMismatchException, invalidArrayListSizeException, InvalidArrayBoundsException {
+    public Matrix scalarMultiply(Matrix other) throws matrixSizeMismatchException, invalidArrayListSizeException, InvalidArrayBoundsException {
         if (compareSizes(this, other)) throw new matrixSizeMismatchException("Matrices were not the same size");
-        ArrayList<Double> output = new ArrayList<Double>();
+        ArrayList<Double> output = new ArrayList<>();
         for (int i = 0 ; i < values.size(); i++) {
             output.add(values.get(i)*other.getValue(i));
         }
         return new Matrix(width, height, output);
     }
 
-    /******************************************************************************************************************
+    /*------------------------------------------------------------------------------------------------------------------
      * MATRIX OPERATIONS
      */
 
@@ -432,6 +459,8 @@ public class Matrix implements Serializable, Cloneable {
      * Calculate the inverse of the input matrix
      * @return {@code Matrix} The matrix inverse
      * @throws nonInversable the matrix could not be inverted
+     *
+     * @implNote This is very slow {@code O(n^3)}
      */
     public Matrix inverse() throws nonInversable, matrixSizeMismatchException, InvalidArrayBoundsException, invalidColumnException, invalidArrayListSizeException, CloneNotSupportedException, invalidRowException {
         Matrix ref = this.ref();
@@ -493,15 +522,23 @@ public class Matrix implements Serializable, Cloneable {
         return Math.sqrt(mag);
     }
 
+
     /**
      * Returns true if the matrix is diagonalizable
      * @return {@code boolean} if the matrix is diagonalizable
      */
+    @NotYetImplemented
     public boolean isDiagonalizable() {
         // TODO: Determine if a matrix is diagonalizable
         return false;
     }
 
+
+    /**
+     *
+     * @return {@code Matrix} the diagonalized matrix
+     */
+    @NotYetImplemented
     public Matrix diagonalize() {
         // TODO: Diagonalize a matrix
         return null;
@@ -640,7 +677,7 @@ public class Matrix implements Serializable, Cloneable {
         return out;
     }
 
-    /******************************************************************************************************************
+    /*------------------------------------------------------------------------------------------------------------------
      * Additional functions
      */
 
@@ -662,7 +699,7 @@ public class Matrix implements Serializable, Cloneable {
      */
     private int XYtoIndex(int x, int y) throws invalidArrayListSizeException {
         if (!checkXYBounds(x, y)) throw new invalidArrayListSizeException("Invalid Array bounds: x:" + x + ", y: " + y);
-        System.out.println("X- " + x + " Y- " + y + " Gives us: " + x*width+y);
+        //System.out.println("X- " + x + " Y- " + y + " Gives us: " + x*width+y);
         return x*width+y;
     }
 
@@ -701,7 +738,7 @@ public class Matrix implements Serializable, Cloneable {
     }
 
     /**
-     * Print the matrix class in a nice format
+     * Print the matrix class in a nice printable format
      * @return {@code String } the formatted output string
      */
     public String print() throws invalidArrayListSizeException {
@@ -736,6 +773,11 @@ public class Matrix implements Serializable, Cloneable {
         return out.toString();
     }
 
+    /**
+     * Return whether two the matrix is equivalent to another object
+     * @param o {@code Object} the other object
+     * @return {@code boolean} Returns true if the objects are equal
+     */
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -746,6 +788,10 @@ public class Matrix implements Serializable, Cloneable {
                 Objects.equals(values, matrix.values);
     }
 
+    /**
+     * Return a hash of the Matrix
+     * @return {@code int} the hash of the Matrix
+     */
     @Override
     public int hashCode() {
         int hash = 1;
@@ -756,25 +802,41 @@ public class Matrix implements Serializable, Cloneable {
     }
 
 
+
+    /**
+     * Display a debug breakdown of the matrix using Java's reflection process
+     * @return {@code String} a breakdown of the contents of the matrix
+     */
+    @NotYetImplemented
     public String debug() {
         // TODO: Write reflection debug output
         return null;
     }
 
+    /**
+     * Return the raw data contained within the matrix
+     * @return {@code Arraylist<Double>} The inner ArrayList
+     */
     public ArrayList<Double> data() {
         return values;
     }
 
+    /**
+     * Compares the Matrix dimensions
+     * @param a {@code Matrix} the first matrix
+     * @param b {@code Matrix} the second matrix
+     * @return {@code boolean} Returns true if the matrices have the same width and height
+     */
     private static boolean compareSizes(Matrix a, Matrix b) {
         return (a.getHeight() == b.getHeight() && a.getWidth() == b.getWidth());
     }
 
     /**
      * Calculates the dot product of row in Matrix A and a column in Matrix B
-     * @param row
-     * @param column
-     * @param other
-     * @return
+     * @param row {@code int} The row to be used
+     * @param column {@code int} the column to be used
+     * @param other {@code Matrix} the other matrix to be used
+     * @return {@code int} the dot product between a row in the current matrix and a column in another matrix
      */
     private double rowColumnDotProduct(int row, int column, Matrix other) throws InvalidArrayBoundsException, invalidArrayListSizeException {
         double sum = 0;
@@ -784,14 +846,24 @@ public class Matrix implements Serializable, Cloneable {
         return sum;
     }
 
-    private boolean zeroRow(int row) throws invalidArrayListSizeException {
-        double sum = 0;
-        for (int i = 0; i < width; i++) {
-            sum += doubleXYtoIndex(row, i);
-        }
-        return sum == 0;
+    /**
+     * Determine whether a given row in the Matrix consists of all zeros or not
+     * @param row {@code int} The row to check
+     * @return {@boolean} returns true if the row consists of all zeros
+     * @throws invalidArrayListSizeException Thrown if the array size is invalid
+     * @throws InvalidArrayBoundsException Thrown if the row lies outside of the Matrix bounds
+     */
+    private boolean zeroRow(int row) throws invalidArrayListSizeException, InvalidArrayBoundsException {
+        return this.getWindowMatrix(0, row, width, 1).magnitude() == 0;
     }
 
+    /**
+     * Determine whether a given column in the Matrix consists of all zeros or not
+     * @param column {@code int} The row to check
+     * @return {@boolean} returns true if the column consists of all zeros
+     * @throws invalidArrayListSizeException Thrown if the array size is invalid
+     * @throws InvalidArrayBoundsException Thrown if the column lies outside of the Matrix bounds
+     */
     private boolean zeroColumn(int column) throws invalidArrayListSizeException {
         double sum = 0;
         for (int i = 0; i < height; i++) {
@@ -803,11 +875,11 @@ public class Matrix implements Serializable, Cloneable {
     /**
      * Returns the Cofactor of a given matrix
      * Code reformatted and taken from https://www.geeksforgeeks.org/determinant-of-a-matrix/
-     * @param p
-     * @param q
-     * @return
-     * @throws invalidArrayListSizeException
-     * @throws InvalidArrayBoundsException
+     * @param p {@code int} the start of the cofactor X region
+     * @param q {@code int} the start of the cofactor Y region
+     * @return {@code Matrix} the cofactor of the specified submatrix
+     * @throws invalidArrayListSizeException Thrown if the produced {@code ArrayList<Double>} is the wrong size
+     * @throws InvalidArrayBoundsException Thrown if the Bounds p and q lie outside of the Array bounds
      */
     private Matrix getCofactor(int p, int q) throws invalidArrayListSizeException, InvalidArrayBoundsException {
         int i = 0;
@@ -831,6 +903,13 @@ public class Matrix implements Serializable, Cloneable {
         return Out;
     }
 
+    /**
+     * Initialize a matrix with all zeros and return said matrix
+     * @param w {@code int} The width of the zero matrix
+     * @param h {@code int} The height of the zero matrix
+     * @return {@code Matrix} The zero initialized matrix
+     * @throws invalidArrayListSizeException Thrown if the width or the height of the matrix are negative
+     */
     public static Matrix zeroes(int w, int h) throws invalidArrayListSizeException {
         Double[] data = new Double[w*h];
         Arrays.fill(data, 0d);
@@ -838,6 +917,13 @@ public class Matrix implements Serializable, Cloneable {
         return new Matrix(w, h, out);
     }
 
+    /**
+     * Initialize a matrix with all ones and return said matrix
+     * @param w {@code int} The width of the ones matrix
+     * @param h {@code int} The height of the ones matrix
+     * @return {@code Matrix} The one initialized matrix
+     * @throws invalidArrayListSizeException Thrown if the width or the height of the matrix are negative
+     */
     public static Matrix ones(int w, int h) throws invalidArrayListSizeException {
         Double[] data = new Double[w*h];
         Arrays.fill(data, 1d);
@@ -845,6 +931,13 @@ public class Matrix implements Serializable, Cloneable {
         return new Matrix(w, h, out);
     }
 
+    /**
+     * Initialize a matrix with all values equalling a constant and return said matrix
+     * @param w {@code int} The width of the constant matrix
+     * @param h {@code int} The height of the constant matrix
+     * @return {@code Matrix} The constant initialized matrix
+     * @throws invalidArrayListSizeException Thrown if the width or the height of the matrix are negative
+     */
     public static Matrix constant(int w, int h, double constant) throws invalidArrayListSizeException {
         Double[] data = new Double[w*h];
         Arrays.fill(data, constant);
@@ -853,55 +946,77 @@ public class Matrix implements Serializable, Cloneable {
         return new Matrix(w, h, out);
     }
 
+
+    /**
+     * Returns an identity matrix of the specified dimensions
+     * @param w {@code int} the Width of the identity matrix
+     * @param h {@code int} the height of the identity matrix
+     * @return {@code Matrix} The identity matrix
+     */
+    @NotYetImplemented
     public static Matrix identity(int w, int h) {
         return null;
     }
 
+    /**
+     * Serialize and Write a Matrix to an output stream
+     * @param out {@code ObjectOutputStream out} The output Stream
+     * @throws IOException Thrown if something is wrong with the output stream
+     */
+    @NotYetImplemented
     public void writeObject(ObjectOutputStream out) throws IOException {
 
     }
 
+    /**
+     * Read in a Serialized matrix and produce a Matrix class
+     * @param in {@ObjectInputStream in} The input Stream
+     * @throws IOException Thrown if something is wrong with the Input Stream
+     * @throws ClassNotFoundException Thrown if something is wrong with the class input
+     */
+    @NotYetImplemented
     public void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException {
 
     }
 
+    /**
+     * Handles the case where an object is read and no data is contained within the object
+     * @throws ObjectStreamException Thrown when something is wrong with the Object Stream
+     */
+    @NotYetImplemented
     public void readObjectNoData() throws ObjectStreamException {
 
     }
 
+    /**
+     * Deletes the content of the current matrix
+     */
     public void delete() {
         width = 0;
         height = 0;
-        values = new ArrayList<Double>();
+        values = new ArrayList<>();
     }
 
-    public void swapRows(int a, int b) throws invalidArrayListSizeException {
-        double val;
-        for (int i = 0; i < getWidth(); i++) {
-            swapValues(XYtoIndex(i, a), XYtoIndex(i, b));
-        }
-    }
-
-    public void swapColumns(int a, int b) throws invalidArrayListSizeException {
-        double val;
-        for (int i = 0; i < getHeight(); i++) {
-            swapValues(XYtoIndex(a, i), XYtoIndex(b, i));
-        }
-    }
-
-    public void swapValues(int a, int b) {
-        double val = values.get(b);
-        values.set(b, values.get(a));
-        values.set(a, val);
-    }
-
+    /**
+     * Creates a copy of the Matrix object
+     * @return {@code Matrix} An identical copy of the current matrix
+     * @throws CloneNotSupportedException Thrown if the matrix is unable to be cloned
+     */
     @Override
     public Matrix clone() throws CloneNotSupportedException {
         return (Matrix)super.clone();
     }
 
 
-
+    /**
+     * Appends a second matrix to the right of the current matrix
+     * @param other {@code Matrix} the other matrix
+     * @return {@code matrix} A combined matrix consisting of both original matrices
+     * @throws invalidArrayListSizeException Thrown if the ArrayList size does not match the expected combined size
+     * @throws invalidColumnException Thrown if the added column does not exist within bounds
+     * @throws InvalidArrayBoundsException Thrown if the Values being accessed exist outside of the ArrayList bounds
+     * @throws matrixSizeMismatchException Thrown if the heights of the two matrices are not the same
+     */
     public Matrix appendRight(Matrix other) throws invalidArrayListSizeException, invalidColumnException, InvalidArrayBoundsException, matrixSizeMismatchException {
         if (height != other.height) throw new matrixSizeMismatchException("Matrices must be of same height");
         Matrix m = this;
@@ -911,4 +1026,11 @@ public class Matrix implements Serializable, Cloneable {
         return m;
     }
 
+    /**
+     * Array Test function
+     * @param args {@code String[]} Input arguments
+     */
+    public static void main(String[] args) {
+        System.out.println("Matrix Class Test application and demonstration");
+    }
 }
