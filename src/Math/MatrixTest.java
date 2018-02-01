@@ -220,8 +220,11 @@ class MatrixTest {
 
     @Disabled
     @Test
-    void transpose() {
-        assertTrue(false);
+    void transpose() throws invalidArrayListSizeException {
+        Matrix a = new Matrix(4,3, mA);
+        System.out.println(a);
+        a = a.transpose();
+        System.out.println(a);
     }
 
     @Disabled
