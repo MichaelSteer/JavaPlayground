@@ -7,20 +7,30 @@ import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Objects;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 class MatrixTest {
 
-    ArrayList<Double> mA;
+    private Double[] iA, iB;
+    private ArrayList<Double> mA, mB;
 
     @BeforeEach
     void setUp() {
         System.out.println("Setup");
-        Double[] iA = new Double[]{ 1.0, 2.0, 3.0, 4.0, 5.0, 6.0, 7.0, 8.0, 9.0} ;
+        iA = new Double[]{ 1.0, 2.0, 3.0, 4.0,
+                           5.0, 6.0, 7.0, 8.0,
+                           9.0, 10.0, 11.0, 12.0 } ;
         mA = new ArrayList<>(Arrays.asList(iA));
+
+        iB = new Double[]{ 7.0, 4.0, 1.0,
+                           2.0, 9.0, 2.0,
+                           1.0, 6.0, 0.0 } ;
+        mB = new ArrayList<>(Arrays.asList(iB));
     }
 
+    @Disabled
     @AfterEach
     void tearDown() {
     }
@@ -81,14 +91,19 @@ class MatrixTest {
 
     @Disabled
     @Test
-    void getRow() {
-        assertTrue(false);
+    void getRow() throws invalidArrayListSizeException, invalidRowException {
+        Matrix m = new Matrix(4, 3, mA);
+        System.out.println(m.getRow(0));
     }
 
     @Disabled
     @Test
-    void getColumn() {
-        assertTrue(false);
+    void getColumn() throws invalidArrayListSizeException, invalidColumnException {
+        Matrix m = new Matrix(4, 3, mA);
+        m = m.getColumn(0);
+        System.out.println(m);
+        System.out.println("WIDTH: " + m.getWidth());
+        System.out.println("HEIGHT: " + m.getHeight());
     }
 
     @Disabled
@@ -115,28 +130,56 @@ class MatrixTest {
         assertTrue(false);
     }
 
-    @Disabled
+
     @Test
-    void addColumn() {
-        assertTrue(false);
+    void addColumn() throws invalidArrayListSizeException, InvalidArrayBoundsException {
+        Matrix m = new Matrix(4,3, mA);
+        Matrix c = new Matrix(1, 3, 9.0, 9.0, 9.0);
+        Matrix d = new Matrix(1, 3, 15.0, 15.0, 15.0);
+
+        m = m.addColumn(c, 3);
+        System.out.println(m);
+        System.out.println("WIDTH: " + m.getWidth() + " HEIGHT: " + m.getHeight());
+        m = m.addColumn(d, 4);
+        System.out.println(m);
+    }
+
+    @Test
+    void addRow() throws invalidArrayListSizeException, InvalidArrayBoundsException {
+        Matrix m = new Matrix(4,3, mA);
+        Matrix c = new Matrix(4, 1, 9.0, 9.0, 9.0, 9.0);
+        Matrix d = new Matrix(4, 1, 15.0, 15.0, 15.0, 15.0);
+
+        System.out.println(m);
+        m = m.addRow(c, 3);
+        System.out.println(m);
+        System.out.println("WIDTH: " + m.getWidth() + " HEIGHT: " + m.getHeight());
+        m = m.addRow(d, 4);
+        System.out.println(m);
     }
 
     @Disabled
     @Test
-    void addRow() {
-        assertTrue(false);
+    void add() throws matrixSizeMismatchException, InvalidArrayBoundsException, invalidArrayListSizeException {
+        Matrix A = new Matrix(4,3, mA);
+        Matrix B = new Matrix(4,3, mA);
+        Matrix C = A.add(B);
+        System.out.println(C);
+        assertEquals("[ 2.0 4.0 6.0 8.0 " +
+                          "\n  10.0 12.0 14.0 16.0 " +
+                          "\n  18.0 20.0 22.0 24.0 ]", C.print());
     }
 
     @Disabled
     @Test
-    void add() {
-        assertTrue(false);
-    }
-
-    @Disabled
-    @Test
-    void add1() {
-        assertTrue(false);
+    void add1() throws invalidArrayListSizeException {
+        Matrix A = new Matrix(4,3, mA);
+        double B = 5;
+        Matrix C = A.add(B);
+        System.out.println(C);
+        assertEquals("[ 6.0 7.0 8.0 9.0 " +
+                          "\n  10.0 11.0 12.0 13.0 " +
+                          "\n  14.0 15.0 16.0 17.0 ]", C.print());
     }
 
     @Disabled
@@ -193,21 +236,28 @@ class MatrixTest {
         assertTrue(false);
     }
 
-    @Disabled
     @Test
-    void magnitude() {
-        assertTrue(false);
+    void magnitude() throws invalidArrayListSizeException {
+        Matrix m = new Matrix (4, 3, mA);
+        System.out.println("Magnitude of:");
+        System.out.println(m);
+        System.out.println("is");
+        System.out.println(m.magnitude());
+
+        assertEquals(m.magnitude(), Math.sqrt(650.0));
     }
 
     @Disabled
     @Test
     void isDiagonalizable() {
+        // TODO: Implement Diagonalization tester function for testing
         assertTrue(false);
     }
 
     @Disabled
     @Test
     void diagonalize() {
+        // TODO: Implement Diagonalization function for testing
         assertTrue(false);
     }
 
@@ -274,11 +324,27 @@ class MatrixTest {
 
     @Test
     void print() throws invalidArrayListSizeException {
-        Matrix m = new Matrix(3,3, mA);
+        Matrix m = new Matrix(4,3, mA);
+        System.out.println(m);
+        assertEquals("[ 1.0 2.0 3.0 4.0 " +
+                           "\n  5.0 6.0 7.0 8.0 " +
+                           "\n  9.0 10.0 11.0 12.0 ]", m.print());
 
-        assertEquals("[1.0, 2.0, 3.0" +
-                           "\n 4.0, 5.0, 6.0" +
-                           "\n 7.0, 8.0, 9.0]", m.print());
+        Matrix t = new Matrix(1, 3, 1.0,2.0,69.0);
+        System.out.println(t);
+    }
+
+    @Test
+    void println() throws invalidArrayListSizeException {
+        Matrix m = new Matrix(3, 3, mA);
+        System.out.println("M: " + m);
+//        assertTrue(Objects.equals("[1.0, 2.0, 3.0" +
+//                           "\n 4.0, 5.0, 6.0" +
+//                           "\n 7.0, 8.0, 9.0]", m.toString()));
+
+        System.out.println("Row MAtrix");
+        Matrix r = new Matrix(3, 1, 1.0, 2.0, 3.0);
+        System.out.println("M: " + r);
     }
 
     @Disabled
@@ -342,22 +408,35 @@ class MatrixTest {
         assertTrue(false);
     }
 
-    @Disabled
     @Test
-    void delete() {
-        assertTrue(false);
+    void delete() throws invalidArrayListSizeException {
+        Matrix m = new Matrix(3, 3, mA);
+        m = m.delete();
+        assertNull(m);
     }
 
-    @Disabled
     @Test
-    void swapRows() {
-        assertTrue(false);
+    void swapRows() throws invalidArrayListSizeException {
+        Matrix m = new Matrix(4,3, mA);
+        System.out.println(m);
+        m.swapRows(0, 1);
+        System.out.println(m.toString());
+
+        assertTrue(Objects.equals("[ 5.0 6.0 7.0 8.0 " +
+                                   "\n  1.0 2.0 3.0 4.0 " +
+                                   "\n  9.0 10.0 11.0 12.0 ]", m.toString()));
     }
 
-    @Disabled
     @Test
-    void swapColumns() {
-        assertTrue(false);
+    void swapColumns() throws invalidArrayListSizeException {
+        Matrix m = new Matrix(4,3, mA);
+        System.out.println(m);
+        m.swapColumns(0, 1);
+        System.out.println(m);
+
+        assertTrue(Objects.equals("[ 2.0 1.0 3.0 4.0 " +
+                                  "\n  6.0 5.0 7.0 8.0 " +
+                                  "\n  10.0 9.0 11.0 12.0 ]", m.toString()));
     }
 
     @Disabled
@@ -366,14 +445,30 @@ class MatrixTest {
         assertTrue(false);
     }
 
-    @Disabled
     @Test
-    void appendRight() {
-        assertTrue(false);
+    void appendRight() throws matrixSizeMismatchException, InvalidArrayBoundsException, invalidColumnException, invalidArrayListSizeException, CloneNotSupportedException {
+        Matrix a = new Matrix(4,3, mA);
+        Matrix b = new Matrix(3, 3, mB);
+        Matrix c = a.appendRight(b);
+        System.out.println(c);
     }
 
     @Test
     void initTest() throws invalidArrayListSizeException {
-        Matrix m = new Matrix(3, 3, mA);
+
+    }
+
+    @Test
+    void XYIndexTest() throws invalidArrayListSizeException, InvalidArrayBoundsException {
+        Matrix a = new Matrix(4,3,mA);
+        for (int i = 0; i < a.getWidth()*a.getHeight(); i++) {
+            System.out.println(a.getValue(i));
+        }
+
+        for (int w = 0; w < a.getWidth(); w++) {
+            for (int h = 0; h < a.getHeight(); h++) {
+                System.out.println(a.getValue(w, h));
+            }
+        }
     }
 }

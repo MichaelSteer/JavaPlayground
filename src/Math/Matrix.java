@@ -90,7 +90,9 @@ public class Matrix implements Serializable, Cloneable {
      * @see Double
      */
     public double getValue(int x, int y) throws InvalidArrayBoundsException, invalidArrayListSizeException {
-        if(this.checkXYBounds(x, y)) throw new InvalidArrayBoundsException("Invalid matrix getValue parameters");
+        System.out.println("GetValue: X: " + x + " Y: " + y);
+        if(!checkXYBounds(x, y)) throw new InvalidArrayBoundsException(x + "," + y + " Invalid matrix getValue parameters"
+        + " for matrix of size " + width + "," + height);
         return doubleXYtoIndex(x, y);
     }
 
@@ -104,7 +106,7 @@ public class Matrix implements Serializable, Cloneable {
      */
     public double getValue(int index) throws InvalidArrayBoundsException {
         if (index < 0 || index >= values.size()) {
-            throw new InvalidArrayBoundsException("Invalid matrix getValue Parameters");
+            throw new InvalidArrayBoundsException("Invalid matrix getValue Parameters. Index: " + index);
         }
         return values.get(index);
     }
@@ -147,7 +149,7 @@ public class Matrix implements Serializable, Cloneable {
      */
     public void swapRows(int a, int b) throws invalidArrayListSizeException {
         double val;
-        for (int i = 0; i < getWidth(); i++) {
+        for (int i = 0; i < width; i++) {
             swapValues(XYtoIndex(i, a), XYtoIndex(i, b));
         }
     }
@@ -160,7 +162,7 @@ public class Matrix implements Serializable, Cloneable {
      */
     public void swapColumns(int a, int b) throws invalidArrayListSizeException {
         double val;
-        for (int i = 0; i < getHeight(); i++) {
+        for (int i = 0; i < height; i++) {
             swapValues(XYtoIndex(a, i), XYtoIndex(b, i));
         }
     }
@@ -247,12 +249,12 @@ public class Matrix implements Serializable, Cloneable {
      * @throws invalidRowException if y is outside of the matrix size bounds
      */
     public Matrix getRow(int y) throws invalidRowException, invalidArrayListSizeException {
-        if (checkXYBounds(0, y)) throw new invalidRowException("Invalid Row: " + y);
-        ArrayList<Double> row = new ArrayList<>();
-        for(int i = 0; i < values.size(); i += getHeight()) {
-            row.add(values.get(i));
+        if (!checkXYBounds(0, y)) throw new invalidRowException("Invalid Row: " + y);
+        ArrayList<Double> out = new ArrayList<Double>();
+        for (int w = 0; w < width; w++) {
+            out.add(doubleXYtoIndex(w, y));
         }
-        return new Matrix(getWidth(), 1, row);
+        return new Matrix(width, 1, out);
     }
 
     /**
@@ -262,8 +264,12 @@ public class Matrix implements Serializable, Cloneable {
      * @throws invalidColumnException if x is outside of the matrix size bounds
      */
     public Matrix getColumn(int x) throws invalidColumnException, invalidArrayListSizeException {
-        if (checkXYBounds(x, 0)) throw new invalidColumnException("Invalid Column: " + x);
-        return new Matrix(1, getHeight(), (ArrayList<Double>) values.subList(XYtoIndex(x, 0), XYtoIndex(x+1, 0)-1));
+        if (!checkXYBounds(x, 0)) throw new invalidColumnException("Invalid Column: " + x);
+        ArrayList<Double> out = new ArrayList<Double>();
+        for (int h = 0; h < height; h++) {
+            out.add(doubleXYtoIndex(x, h));
+        }
+        return new Matrix(1, height, out);
     }
 
     /**
@@ -323,9 +329,10 @@ public class Matrix implements Serializable, Cloneable {
     public Matrix addColumn(Matrix column, int index) throws InvalidArrayBoundsException, invalidArrayListSizeException {
         ArrayList<Double> data = data();
         for (int i = 0; i < height; i++) {
-            data.add(XYtoIndex(index, i), column.getValue(i, 0));
+            data.add(XYtoIndex(width, i)+i, column.getValue(0, i));
         }
         return new Matrix(width+1, height, data);
+
     }
 
     /**
@@ -339,7 +346,7 @@ public class Matrix implements Serializable, Cloneable {
     public Matrix addRow(Matrix row, int index) throws InvalidArrayBoundsException, invalidArrayListSizeException {
         ArrayList<Double> data = data();
         for (int i = 0; i < width; i++) {
-            data.add(XYtoIndex(i, index), row.getValue(0, i));
+            data.add(XYtoIndex(i, height), row.getValue(i, 0));
         }
         return new Matrix(width, height+1, data);
     }
@@ -698,9 +705,10 @@ public class Matrix implements Serializable, Cloneable {
      * @throws invalidArrayListSizeException the matrix size does not make sense
      */
     private int XYtoIndex(int x, int y) throws invalidArrayListSizeException {
-        if (!checkXYBounds(x, y)) throw new invalidArrayListSizeException("Invalid Array bounds: x:" + x + ", y: " + y);
+        if (!checkXYBounds(x, y)) throw new invalidArrayListSizeException("Invalid Array bounds: x:" + x + ", y: " + y
+        + " On Matrix with Width " + width + " and Height " + height);
         //System.out.println("X- " + x + " Y- " + y + " Gives us: " + x*width+y);
-        return x*width+y;
+        return y*width+x;
     }
 
     /**
@@ -721,7 +729,11 @@ public class Matrix implements Serializable, Cloneable {
      * @return {@code boolean} the bounds condition status
      */
     private boolean checkXYBounds(int x, int y) {
-        return !(x < 0 || x >= this.width || y < 0 || y >= this.height);
+        //System.out.println("ChekcXYBounds X: " + x + " Y: " + y);
+        //System.out.println("CheckXYBounds W: " + width + " H: " + height);
+        if (x < 0 || y < 0) return false;
+        if (x > width || y > height) return false;
+        else return true;
     }
 
     /**
@@ -742,34 +754,17 @@ public class Matrix implements Serializable, Cloneable {
      * @return {@code String } the formatted output string
      */
     public String print() throws invalidArrayListSizeException {
-        StringBuilder out;
-        out = new StringBuilder("[");
-
-        out.append(values.get(XYtoIndex(0, 0)));
-        for (int j = 1; j < height; j++) {
-            out.append(", ");
-            out.append(values.get(XYtoIndex(0, j)));
-        }
-        out.append("\n");
-
-        for (int i = 1; i < width-1; i++) {
+        StringBuilder out = new StringBuilder("[");
+        for (int h = 0; h < height; h++) {
+            if (h > 0) out.append(" ");
             out.append(" ");
-            out.append(values.get(XYtoIndex(i, 0)));
-            for (int j = 1; j < height; j++) {
-                out.append(", ");
-                out.append(values.get(XYtoIndex(i, j)));
+            for (int w = 0; w < width; w++) {
+                out.append(doubleXYtoIndex(w,h));
+                out.append(" ");
             }
-            out.append("\n");
-        }
-
-        out.append(" ");
-        out.append(values.get(XYtoIndex(width-1, 0)));
-        for (int j = 1; j < height; j++) {
-            out.append(", ");
-            out.append(values.get(XYtoIndex(width-1, j)));
+            if (h != height-1) out.append("\n");
         }
         out.append("]");
-
         return out.toString();
     }
 
@@ -991,10 +986,12 @@ public class Matrix implements Serializable, Cloneable {
     /**
      * Deletes the content of the current matrix
      */
-    public void delete() {
+    public Matrix delete() {
         width = 0;
         height = 0;
-        values = new ArrayList<>();
+        values.clear();
+        values = null;
+        return null;
     }
 
     /**
@@ -1017,11 +1014,13 @@ public class Matrix implements Serializable, Cloneable {
      * @throws InvalidArrayBoundsException Thrown if the Values being accessed exist outside of the ArrayList bounds
      * @throws matrixSizeMismatchException Thrown if the heights of the two matrices are not the same
      */
-    public Matrix appendRight(Matrix other) throws invalidArrayListSizeException, invalidColumnException, InvalidArrayBoundsException, matrixSizeMismatchException {
+    public Matrix appendRight(Matrix other) throws invalidArrayListSizeException, invalidColumnException, InvalidArrayBoundsException, matrixSizeMismatchException, CloneNotSupportedException {
         if (height != other.height) throw new matrixSizeMismatchException("Matrices must be of same height");
-        Matrix m = this;
+        Matrix m = this.clone();
         for (int i = 0; i < other.width; i++) {
+            System.out.println("Column: " + other.getColumn(i));
             m = m.addColumn(other.getColumn(i), m.getWidth());
+
         }
         return m;
     }
