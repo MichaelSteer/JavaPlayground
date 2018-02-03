@@ -1,4 +1,4 @@
-package Math.Matrix;
+package Math.Matrix.MatrixException;
 
 public class invalidSubtractionException extends Exception {
     invalidSubtractionException(String message) {

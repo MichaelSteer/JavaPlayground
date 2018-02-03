@@ -1,7 +1,7 @@
-package Math.Matrix;
+package Math.Matrix.MatrixException;
 import java.lang.Exception;
 public class nonInversable extends Exception {
-    nonInversable(String message) {
+    public nonInversable(String message) {
         super(message);
         // Exception goes here
     }

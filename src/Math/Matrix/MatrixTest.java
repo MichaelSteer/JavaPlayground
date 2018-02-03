@@ -1,5 +1,6 @@
 package Math.Matrix;
 
+import Math.Matrix.MatrixException.*;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Disabled;
@@ -97,14 +98,14 @@ class MatrixTest {
     @Disabled
     @Test
     void getRow() throws invalidArrayListSizeException, invalidRowException {
-        Matrix m = new Matrix(4, 3, mA);
+        DenseMatrix m = new DenseMatrix(4, 3, mA);
         System.out.println(m.getRow(0));
     }
 
     @Disabled
     @Test
     void getColumn() throws invalidArrayListSizeException, invalidColumnException {
-        Matrix m = new Matrix(4, 3, mA);
+        DenseMatrix m = new DenseMatrix(4, 3, mA);
         m = m.getColumn(0);
         System.out.println(m);
         System.out.println("WIDTH: " + m.getWidth());
@@ -138,9 +139,9 @@ class MatrixTest {
 
     @Test
     void addColumn() throws invalidArrayListSizeException, InvalidArrayBoundsException {
-        Matrix m = new Matrix(4,3, mA);
-        Matrix c = new Matrix(1, 3, 9.0, 9.0, 9.0);
-        Matrix d = new Matrix(1, 3, 15.0, 15.0, 15.0);
+        DenseMatrix m = new DenseMatrix(4,3, mA);
+        DenseMatrix c = new DenseMatrix(1, 3, 9.0, 9.0, 9.0);
+        DenseMatrix d = new DenseMatrix(1, 3, 15.0, 15.0, 15.0);
 
         m = m.addColumn(c, 3);
         System.out.println(m);
@@ -151,9 +152,9 @@ class MatrixTest {
 
     @Test
     void addRow() throws invalidArrayListSizeException, InvalidArrayBoundsException {
-        Matrix m = new Matrix(4,3, mA);
-        Matrix c = new Matrix(4, 1, 9.0, 9.0, 9.0, 9.0);
-        Matrix d = new Matrix(4, 1, 15.0, 15.0, 15.0, 15.0);
+        DenseMatrix m = new DenseMatrix(4,3, mA);
+        DenseMatrix c = new DenseMatrix(4, 1, 9.0, 9.0, 9.0, 9.0);
+        DenseMatrix d = new DenseMatrix(4, 1, 15.0, 15.0, 15.0, 15.0);
 
         System.out.println(m);
         m = m.addRow(c, 3);
@@ -166,9 +167,9 @@ class MatrixTest {
     @Disabled
     @Test
     void add() throws matrixSizeMismatchException, InvalidArrayBoundsException, invalidArrayListSizeException {
-        Matrix A = new Matrix(4,3, mA);
-        Matrix B = new Matrix(4,3, mA);
-        Matrix C = A.add(B);
+        DenseMatrix A = new DenseMatrix(4,3, mA);
+        DenseMatrix B = new DenseMatrix(4,3, mA);
+        DenseMatrix C = A.add(B);
         System.out.println(C);
         assertEquals("[ 2.0 4.0 6.0 8.0 " +
                           "\n  10.0 12.0 14.0 16.0 " +
@@ -178,9 +179,9 @@ class MatrixTest {
     @Disabled
     @Test
     void add1() throws invalidArrayListSizeException {
-        Matrix A = new Matrix(4,3, mA);
+        DenseMatrix A = new DenseMatrix(4,3, mA);
         double B = 5;
-        Matrix C = A.add(B);
+        DenseMatrix C = A.add(B);
         System.out.println(C);
         assertEquals("[ 6.0 7.0 8.0 9.0 " +
                           "\n  10.0 11.0 12.0 13.0 " +
@@ -226,7 +227,7 @@ class MatrixTest {
     @Disabled
     @Test
     void transpose() throws invalidArrayListSizeException {
-        Matrix a = new Matrix(4,3, mA);
+        DenseMatrix a = new DenseMatrix(4,3, mA);
         System.out.println(a);
         a = a.transpose();
         System.out.println(a);
@@ -246,7 +247,7 @@ class MatrixTest {
 
     @Test
     void magnitude() throws invalidArrayListSizeException {
-        Matrix m = new Matrix (4, 3, mA);
+        DenseMatrix m = new DenseMatrix (4, 3, mA);
         System.out.println("Magnitude of:");
         System.out.println(m);
         System.out.println("is");
@@ -314,7 +315,7 @@ class MatrixTest {
     @Disabled
     @Test
     void determinant() throws invalidDeterminantException, invalidArrayListSizeException, InvalidArrayBoundsException {
-        Matrix m = new Matrix(3,3, iS);
+        DenseMatrix m = new DenseMatrix(3,3, iS);
         Double det = m.determinant(m);
         System.out.println(det);
     }
@@ -334,26 +335,26 @@ class MatrixTest {
 
     @Test
     void print() throws invalidArrayListSizeException {
-        Matrix m = new Matrix(4,3, mA);
+        DenseMatrix m = new DenseMatrix(4,3, mA);
         System.out.println(m);
         assertEquals("[ 1.0 2.0 3.0 4.0 " +
                            "\n  5.0 6.0 7.0 8.0 " +
                            "\n  9.0 10.0 11.0 12.0 ]", m.print());
 
-        Matrix t = new Matrix(1, 3, 1.0,2.0,69.0);
+        DenseMatrix t = new DenseMatrix(1, 3, 1.0,2.0,69.0);
         System.out.println(t);
     }
 
     @Test
     void println() throws invalidArrayListSizeException {
-        Matrix m = new Matrix(3, 3, mA);
+        DenseMatrix m = new DenseMatrix(3, 3, mA);
         System.out.println("M: " + m);
 //        assertTrue(Objects.equals("[1.0, 2.0, 3.0" +
 //                           "\n 4.0, 5.0, 6.0" +
 //                           "\n 7.0, 8.0, 9.0]", m.toString()));
 
         System.out.println("Row MAtrix");
-        Matrix r = new Matrix(3, 1, 1.0, 2.0, 3.0);
+        DenseMatrix r = new DenseMatrix(3, 1, 1.0, 2.0, 3.0);
         System.out.println("M: " + r);
     }
 
@@ -379,28 +380,28 @@ class MatrixTest {
     @Disabled
     @Test
     void zeroes() throws invalidArrayListSizeException {
-        Matrix m = Matrix.zeroes(5, 5);
+        DenseMatrix m = DenseMatrix.zeroes(5, 5);
         System.out.println(m);
     }
 
     @Disabled
     @Test
     void ones() throws invalidArrayListSizeException {
-        Matrix m = Matrix.ones(5, 5);
+        DenseMatrix m = DenseMatrix.ones(5, 5);
         System.out.println(m);
     }
 
     @Disabled
     @Test
     void constant() throws invalidArrayListSizeException {
-        Matrix m = Matrix.constant(5, 5, 42.0d);
+        DenseMatrix m = DenseMatrix.constant(5, 5, 42.0d);
         System.out.println(m);
     }
 
     @Disabled
     @Test
     void identity() throws invalidArrayListSizeException {
-        Matrix m = Matrix.identity(3, 3);
+        DenseMatrix m = DenseMatrix.identity(3, 3);
         System.out.println(m);
     }
 
@@ -424,14 +425,14 @@ class MatrixTest {
 
     @Test
     void delete() throws invalidArrayListSizeException {
-        Matrix m = new Matrix(3, 3, mA);
+        DenseMatrix m = new DenseMatrix(3, 3, mA);
         m = m.delete();
         assertNull(m);
     }
 
     @Test
     void swapRows() throws invalidArrayListSizeException {
-        Matrix m = new Matrix(4,3, mA);
+        DenseMatrix m = new DenseMatrix(4,3, mA);
         System.out.println(m);
         m.swapRows(0, 1);
         System.out.println(m.toString());
@@ -443,7 +444,7 @@ class MatrixTest {
 
     @Test
     void swapColumns() throws invalidArrayListSizeException {
-        Matrix m = new Matrix(4,3, mA);
+        DenseMatrix m = new DenseMatrix(4,3, mA);
         System.out.println(m);
         m.swapColumns(0, 1);
         System.out.println(m);
@@ -461,9 +462,9 @@ class MatrixTest {
 
     @Test
     void appendRight() throws matrixSizeMismatchException, InvalidArrayBoundsException, invalidColumnException, invalidArrayListSizeException, CloneNotSupportedException {
-        Matrix a = new Matrix(4,3, mA);
-        Matrix b = new Matrix(3, 3, mB);
-        Matrix c = a.appendRight(b);
+        DenseMatrix a = new DenseMatrix(4,3, mA);
+        DenseMatrix b = new DenseMatrix(3, 3, mB);
+        DenseMatrix c = a.appendRight(b);
         System.out.println(c);
     }
 
@@ -474,7 +475,7 @@ class MatrixTest {
 
     @Test
     void XYIndexTest() throws invalidArrayListSizeException, InvalidArrayBoundsException {
-        Matrix a = new Matrix(4,3,mA);
+        DenseMatrix a = new DenseMatrix(4,3,mA);
         for (int i = 0; i < a.getWidth()*a.getHeight(); i++) {
             System.out.println(a.getValue(i));
         }

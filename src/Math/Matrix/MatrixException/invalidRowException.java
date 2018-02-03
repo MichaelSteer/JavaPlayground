@@ -1,8 +1,8 @@
-package Math.Matrix;
+package Math.Matrix.MatrixException;
 import java.lang.Exception;
 
 public class invalidRowException extends Exception {
-    invalidRowException (String message){
+    public invalidRowException(String message){
         super(message);
         // Exception goes here
     }

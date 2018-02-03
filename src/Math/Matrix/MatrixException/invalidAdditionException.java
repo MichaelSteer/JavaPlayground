@@ -1,4 +1,4 @@
-package Math.Matrix;
+package Math.Matrix.MatrixException;
 import java.lang.Exception;
 
 public class invalidAdditionException extends Exception {

@@ -1,9 +1,9 @@
-package Math.Matrix;
+package Math.Matrix.MatrixException;
 
 import java.lang.Exception;
 
 public class InvalidArrayBoundsException extends Exception {
-    InvalidArrayBoundsException(String message) {
+    public InvalidArrayBoundsException(String message) {
         super(message);
         // Exception goes here
     }

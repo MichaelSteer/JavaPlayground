@@ -1,9 +1,9 @@
-package Math.Matrix;
+package Math.Matrix.MatrixException;
 
 import java.lang.Exception;
 
 public class invalidArrayListSizeException extends Exception {
-    invalidArrayListSizeException(String message) {
+    public invalidArrayListSizeException(String message) {
         super(message);
         // Exception goes here
     }
