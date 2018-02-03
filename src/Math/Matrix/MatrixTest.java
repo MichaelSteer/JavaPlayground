@@ -1,4 +1,4 @@
-package Math;
+package Math.Matrix;
 
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -13,8 +13,8 @@ import static org.junit.jupiter.api.Assertions.*;
 
 class MatrixTest {
 
-    private Double[] iA, iB;
-    private ArrayList<Double> mA, mB;
+    private Double[] iA, iB, iS;
+    private ArrayList<Double> mA, mB, mS;
 
     @BeforeEach
     void setUp() {
@@ -28,6 +28,11 @@ class MatrixTest {
                            2.0, 9.0, 2.0,
                            1.0, 6.0, 0.0 } ;
         mB = new ArrayList<>(Arrays.asList(iB));
+
+        iS = new Double[]{ 1.0, 2.0, 3.0,
+                           4.0, 5.0, 6.0,
+                           7.0, 8.0, 9.0 } ;
+        mS = new ArrayList<>(Arrays.asList(iS));
     }
 
     @Disabled
@@ -308,8 +313,10 @@ class MatrixTest {
 
     @Disabled
     @Test
-    void determinant() {
-        assertTrue(false);
+    void determinant() throws invalidDeterminantException, invalidArrayListSizeException, InvalidArrayBoundsException {
+        Matrix m = new Matrix(3,3, iS);
+        Double det = m.determinant(m);
+        System.out.println(det);
     }
 
     @Disabled
@@ -371,26 +378,30 @@ class MatrixTest {
 
     @Disabled
     @Test
-    void zeroes() {
-        assertTrue(false);
+    void zeroes() throws invalidArrayListSizeException {
+        Matrix m = Matrix.zeroes(5, 5);
+        System.out.println(m);
     }
 
     @Disabled
     @Test
-    void ones() {
-        assertTrue(false);
+    void ones() throws invalidArrayListSizeException {
+        Matrix m = Matrix.ones(5, 5);
+        System.out.println(m);
     }
 
     @Disabled
     @Test
-    void constant() {
-        assertTrue(false);
+    void constant() throws invalidArrayListSizeException {
+        Matrix m = Matrix.constant(5, 5, 42.0d);
+        System.out.println(m);
     }
 
     @Disabled
     @Test
-    void identity() {
-        assertTrue(false);
+    void identity() throws invalidArrayListSizeException {
+        Matrix m = Matrix.identity(3, 3);
+        System.out.println(m);
     }
 
     @Disabled

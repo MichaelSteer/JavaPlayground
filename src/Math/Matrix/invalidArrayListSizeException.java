@@ -1,4 +1,4 @@
-package Math;
+package Math.Matrix;
 
 import java.lang.Exception;
 

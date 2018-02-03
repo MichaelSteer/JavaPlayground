@@ -1,3 +1,16 @@
+/*
+ File name: Complex.java
+ Compilation: java Complex.java
+ Execution: java Comlex.java < input.txt
+ Dependencies: None
+
+ A Complex Numerical implementation in Java done as a learning exercise for
+ writing java code
+
+ @author Michael Steer
+ @version 1.0
+ @since 2018-01-31
+ */
 package Math;
 
 public class Complex {
@@ -25,9 +38,7 @@ public class Complex {
         im = imaginary;
     }
 
-    public double abs() {
-        return Math.hypot(re, im);
-    }
+    public double abs() { return Math.hypot(re, im); }
 
     public double phase() {
         return Math.atan2(re, im);
@@ -63,5 +74,12 @@ public class Complex {
 
     public Complex conjugate() {
         return new Complex(re, -im);
+    }
+
+    public Complex exp(Complex other) {
+        double imx = Math.sin(other.im);
+        double imy = Math.cos(other.im);
+        //double re = re.exp(other.re);
+        return null;
     }
 }

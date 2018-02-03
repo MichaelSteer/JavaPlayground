@@ -1,4 +1,4 @@
-package Math;
+package Math.Matrix;
 
 public class invalidMultiplicationException extends Exception {
     invalidMultiplicationException(String message) {
