@@ -73,7 +73,7 @@ public class DenseMatrix implements Matrix, Serializable, Cloneable {
      * @throws invalidArrayListSizeException {@code ArrayList<Double>} is thrown if the ArrayList
      * does not match the size of the specified values w*h
      */
-    public DenseMatrix(int w, int h, Double... values) throws invalidArrayListSizeException {
+    public DenseMatrix(int w, int h, double[] values) throws invalidArrayListSizeException {
         this(w, h, new ArrayList<>(Arrays.asList(values)));
     }
 
