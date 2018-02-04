@@ -11,7 +11,7 @@
  @version 1.0
  @since 2018-01-31
  */
-package Math;
+package Math.ArithmeticTypes;
 
 public class Complex {
     private double re;
@@ -22,9 +22,12 @@ public class Complex {
         this.im = imaginary;
     }
 
-    public double re() {
-        return re;
+    public void toComplex(double d) {
+        this.re = d;
+        this.im = 0;
     }
+
+    public double re() { return re; }
 
     public double im() {
         return im;
@@ -77,9 +80,6 @@ public class Complex {
     }
 
     public Complex exp(Complex other) {
-        double imx = Math.sin(other.im);
-        double imy = Math.cos(other.im);
-        //double re = re.exp(other.re);
         return null;
     }
 }

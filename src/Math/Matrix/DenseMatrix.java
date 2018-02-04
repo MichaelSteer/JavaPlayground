@@ -20,7 +20,7 @@ import static java.lang.Math.abs;
 
 // TODO: Fill out all Documentation
 // TODO: Change variable type from Double to generic
-public class DenseMatrix implements Serializable, Cloneable {
+public class DenseMatrix implements Matrix, Serializable, Cloneable {
     /**
      * The array of values that are stored within the matrix
      * @see ArrayList
@@ -111,6 +111,16 @@ public class DenseMatrix implements Serializable, Cloneable {
         return values.get(index);
     }
 
+    @Override
+    public double setValue(int x, int y) {
+        return 0;
+    }
+
+    @Override
+    public double setValue(int index) {
+        return 0;
+    }
+
     /**
      * Set a given value for a specified set of coordinate
      * @param x {@code int} the x coordinate of the value within the matrix
@@ -141,6 +151,11 @@ public class DenseMatrix implements Serializable, Cloneable {
      */
     public int getHeight() {
         return height;
+    }
+
+    @Override
+    public void swapValues(int ax, int ay, int bx, int by) {
+
     }
 
     /**
@@ -216,6 +231,21 @@ public class DenseMatrix implements Serializable, Cloneable {
         return new DenseMatrix(w, h, this.getWindowArray(x, y, w, h));
     }
 
+    @Override
+    public void setWindow(int x, int y, Matrix m) {
+
+    }
+
+    @Override
+    public void setWindow(int x, int y, int w, int h, ArrayList<Double> data) {
+
+    }
+
+    @Override
+    public void setWindow(int x, int y, int w, int h, double... data) {
+
+    }
+
     /**
      * Set a subset of the matrix to a corresponding matrix
      * @param x {@code int} the bottom-left X dimension corner of the window
@@ -276,6 +306,11 @@ public class DenseMatrix implements Serializable, Cloneable {
         return new DenseMatrix(1, height, out);
     }
 
+    @Override
+    public void setRow(int y, Matrix row) {
+
+    }
+
     /**
      * Set a given row of the matrix to a specified row
      * @param y {@code int} the requested column
@@ -310,6 +345,16 @@ public class DenseMatrix implements Serializable, Cloneable {
         }
     }
 
+    @Override
+    public void setRow(int y, Double... row) {
+
+    }
+
+    @Override
+    public void setColumn(int x, Matrix column) {
+
+    }
+
     /**
      * Set a given column of the matrix to a specified column
      * @param x {@code int} the requested column
@@ -323,6 +368,41 @@ public class DenseMatrix implements Serializable, Cloneable {
             values.set(i, column.get(XYtoIndex(element, 0)));
             element++;
         }
+    }
+
+    @Override
+    public void setColumn(int x, Double... column) {
+
+    }
+
+    @Override
+    public void addRow(int y, Matrix row) {
+
+    }
+
+    @Override
+    public void addRow(int y, ArrayList<Double> row) {
+
+    }
+
+    @Override
+    public void addRow(int y, Double... row) {
+
+    }
+
+    @Override
+    public void addColumn(int x, Matrix column) {
+
+    }
+
+    @Override
+    public void addColumn(int x, ArrayList<Double> column) {
+
+    }
+
+    @Override
+    public void addColumn(int x, Double... column) {
+
     }
 
     /**
@@ -394,6 +474,11 @@ public class DenseMatrix implements Serializable, Cloneable {
         return new DenseMatrix(width, height, output);
     }
 
+    @Override
+    public Matrix add(Matrix other) {
+        return null;
+    }
+
     /**
      * Subtract an additional matrix to the current matrix in a scalar fashion
      * @param other {@code Matrix} the matrix being subtracted
@@ -421,6 +506,11 @@ public class DenseMatrix implements Serializable, Cloneable {
             output.add(value-constant);
         }
         return new DenseMatrix(width, height, output);
+    }
+
+    @Override
+    public Matrix sub(Matrix other) {
+        return null;
     }
 
     /**
@@ -453,6 +543,21 @@ public class DenseMatrix implements Serializable, Cloneable {
             output.add(value*constant);
         }
         return new DenseMatrix(width, height, output);
+    }
+
+    @Override
+    public Matrix multiply(Matrix other) {
+        return null;
+    }
+
+    @Override
+    public Matrix scalarMultiply(double constant) {
+        return null;
+    }
+
+    @Override
+    public Matrix scalarMultiply(Matrix other) {
+        return null;
     }
 
     /**
@@ -501,6 +606,11 @@ public class DenseMatrix implements Serializable, Cloneable {
             }
         }
         return new DenseMatrix(height, width, out);
+    }
+
+    @Override
+    public double dotProduct(Matrix other) {
+        return 0;
     }
 
     /**
@@ -680,6 +790,11 @@ public class DenseMatrix implements Serializable, Cloneable {
         return determinant(this);
     }
 
+    @Override
+    public double determinant(Matrix m) {
+        return 0;
+    }
+
     /**
      * Returns the determinant of a matrix recursively
      * @param m {@code m} the matrix input
@@ -724,7 +839,7 @@ public class DenseMatrix implements Serializable, Cloneable {
      * @return {@code int} the outcome of the conversion
      * @throws invalidArrayListSizeException the matrix size does not make sense
      */
-    private int XYtoIndex(int x, int y) throws invalidArrayListSizeException {
+    public int XYtoIndex(int x, int y) throws invalidArrayListSizeException {
         if (!checkXYBounds(x, y)) throw new invalidArrayListSizeException("Invalid Array bounds: x:" + x + ", y: " + y
         + " On Matrix with Width " + width + " and Height " + height);
         //System.out.println("X- " + x + " Y- " + y + " Gives us: " + x*width+y);
@@ -738,7 +853,7 @@ public class DenseMatrix implements Serializable, Cloneable {
      * @return {@code int} the outcome of the conversion
      * @throws invalidArrayListSizeException coordanate is out of bounds
      */
-    private Double doubleXYtoIndex(int x, int y) throws invalidArrayListSizeException {
+    public double doubleXYtoIndex(int x, int y) throws invalidArrayListSizeException {
         return values.get(this.XYtoIndex(x, y));
     }
 
