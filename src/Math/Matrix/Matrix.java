@@ -5,6 +5,7 @@ import Math.Matrix.MatrixException.*;
 import java.util.ArrayList;
 
 public interface Matrix {
+
     public double getValue(int x, int y) throws InvalidArrayBoundsException, invalidArrayListSizeException;
     public double getValue(int index) throws InvalidArrayBoundsException;
 
